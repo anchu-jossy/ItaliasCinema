@@ -1,0 +1,202 @@
+package com.example.ajit.italiascinema.Activity.fragments;
+
+import android.content.Context;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import com.example.ajit.italiascinema.R;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
+
+public class LanguagePreferenceFragment extends Fragment {
+
+    @BindView(R.id.btn_1)
+    Button btn1;
+    @BindView(R.id.btn_2)
+    Button btn2;
+    @BindView(R.id.btn_3)
+    Button btn3;
+    @BindView(R.id.btn_4)
+    Button btn4;
+    @BindView(R.id.btn_5)
+    Button btn5;
+    @BindView(R.id.btn_6)
+    Button btn6;
+    @BindView(R.id.btn_done)
+    Button btnDone;
+
+    @BindView(R.id.imgview_leftarrow)
+    ImageView imgviewLeftarrow;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.ll_1)
+    LinearLayout ll1;
+    @BindView(R.id.ll_2)
+    LinearLayout ll2;
+    @BindView(R.id.rl_language_preference)
+    RelativeLayout rlLanguagePreference;
+    Unbinder unbinder;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_language_preference, container, false);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @OnClick({R.id.btn_1, R.id.btn_2, R.id.btn_3, R.id.btn_4, R.id.btn_5, R.id.btn_6, R.id.btn_done, R.id.imgview_leftarrow})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_1:
+
+                    btn1.setBackgroundResource(R.drawable.laguage_colored_button_border);
+                    btn1.setTextColor(Color.WHITE);
+                    btn2.setBackgroundResource(R.drawable.laguage_button_border);
+                    btn2.setTextColor(Color.GRAY);
+                    btn3.setBackgroundResource(R.drawable.laguage_button_border);
+                    btn3.setTextColor(Color.GRAY);
+                    btn4.setBackgroundResource(R.drawable.laguage_button_border);
+                    btn4.setTextColor(Color.GRAY);
+
+                    btn5.setBackgroundResource(R.drawable.laguage_button_border);
+                    btn5.setTextColor(Color.GRAY);
+
+                    btn6.setBackgroundResource(R.drawable.laguage_button_border);
+                    btn6.setTextColor(Color.GRAY);
+
+
+
+
+                break;
+            case R.id.btn_2:
+
+
+                    btn2.setBackgroundResource(R.drawable.laguage_colored_button_border);
+                    btn2.setTextColor(Color.WHITE);
+                    btn1.setBackgroundResource(R.drawable.laguage_button_border);
+                    btn1.setTextColor(Color.GRAY);
+                    btn3.setBackgroundResource(R.drawable.laguage_button_border);
+                    btn3.setTextColor(Color.GRAY);
+                    btn4.setBackgroundResource(R.drawable.laguage_button_border);
+                    btn4.setTextColor(Color.GRAY);
+                    btn5.setBackgroundResource(R.drawable.laguage_button_border);
+                    btn5.setTextColor(Color.GRAY);
+                    btn6.setBackgroundResource(R.drawable.laguage_button_border);
+                    btn6.setTextColor(Color.GRAY);
+
+
+                break;
+            case R.id.btn_3:
+                btn3.setBackgroundResource(R.drawable.laguage_colored_button_border);
+                btn3.setTextColor(Color.WHITE);
+                btn1.setBackgroundResource(R.drawable.laguage_button_border);
+                btn1.setTextColor(Color.GRAY);
+                btn2.setBackgroundResource(R.drawable.laguage_button_border);
+                btn2.setTextColor(Color.GRAY);
+                btn4.setBackgroundResource(R.drawable.laguage_button_border);
+                btn4.setTextColor(Color.GRAY);
+                btn5.setBackgroundResource(R.drawable.laguage_button_border);
+                btn5.setTextColor(Color.GRAY);
+                btn6.setBackgroundResource(R.drawable.laguage_button_border);
+                btn6.setTextColor(Color.GRAY);
+
+
+                break;
+            case R.id.btn_4:
+                btn4.setBackgroundResource(R.drawable.laguage_colored_button_border);
+                btn4.setTextColor(Color.WHITE);
+                btn1.setBackgroundResource(R.drawable.laguage_button_border);
+                btn1.setTextColor(Color.GRAY);
+                btn3.setBackgroundResource(R.drawable.laguage_button_border);
+                btn3.setTextColor(Color.GRAY);
+                btn2.setBackgroundResource(R.drawable.laguage_button_border);
+                btn2.setTextColor(Color.GRAY);
+                btn5.setBackgroundResource(R.drawable.laguage_button_border);
+                btn5.setTextColor(Color.GRAY);
+                btn6.setBackgroundResource(R.drawable.laguage_button_border);
+                btn6.setTextColor(Color.GRAY);
+
+                break;
+            case R.id.btn_5:
+                btn5.setBackgroundResource(R.drawable.laguage_colored_button_border);
+                btn5.setTextColor(Color.WHITE);
+                btn1.setBackgroundResource(R.drawable.laguage_button_border);
+                btn1.setTextColor(Color.GRAY);
+                btn3.setBackgroundResource(R.drawable.laguage_button_border);
+                btn3.setTextColor(Color.GRAY);
+                btn4.setBackgroundResource(R.drawable.laguage_button_border);
+                btn4.setTextColor(Color.GRAY);
+                btn2.setBackgroundResource(R.drawable.laguage_button_border);
+                btn2.setTextColor(Color.GRAY);
+                btn6.setBackgroundResource(R.drawable.laguage_button_border);
+                btn6.setTextColor(Color.GRAY);
+
+                break;
+            case R.id.btn_6:
+                btn6.setBackgroundResource(R.drawable.laguage_colored_button_border);
+                btn6.setTextColor(Color.WHITE);
+                btn1.setBackgroundResource(R.drawable.laguage_button_border);
+                btn1.setTextColor(Color.GRAY);
+                btn3.setBackgroundResource(R.drawable.laguage_button_border);
+                btn3.setTextColor(Color.GRAY);
+                btn4.setBackgroundResource(R.drawable.laguage_button_border);
+                btn4.setTextColor(Color.GRAY);
+                btn5.setBackgroundResource(R.drawable.laguage_button_border);
+                btn5.setTextColor(Color.GRAY);
+                btn2.setBackgroundResource(R.drawable.laguage_button_border);
+                btn2.setTextColor(Color.GRAY);
+
+                break;
+            case R.id.btn_done:
+                Toast.makeText(getContext(), "Language is selected", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.imgview_leftarrow:
+                getActivity().onBackPressed();
+                break;
+        }
+    }
+
+
+}
