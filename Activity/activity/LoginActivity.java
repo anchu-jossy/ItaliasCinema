@@ -1,10 +1,23 @@
 package com.example.ajit.italiascinema.Activity.activity;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Paint;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.PowerManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,18 +26,42 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
+import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
 import com.example.ajit.italiascinema.Activity.fragments.ChangePasswordFragment;
-import com.example.ajit.italiascinema.Activity.network.Connection;
-import com.example.ajit.italiascinema.Activity.network.ResponseCallback;
+import com.example.ajit.italiascinema.Activity.fragments.CustomBottomSheetDialogFragment;
+import com.example.ajit.italiascinema.Activity.interfaces.CommonInterface;
+import com.example.ajit.italiascinema.Activity.model.Info;
+import com.example.ajit.italiascinema.Activity.model.LoginResponse;
 import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
 import com.example.ajit.italiascinema.R;
-import com.google.gson.JsonObject;
+
+import org.solovyev.android.checkout.ActivityCheckout;
+import org.solovyev.android.checkout.Billing;
+import org.solovyev.android.checkout.BillingRequests;
+import org.solovyev.android.checkout.Checkout;
+import org.solovyev.android.checkout.EmptyRequestListener;
+import org.solovyev.android.checkout.Inventory;
+import org.solovyev.android.checkout.ProductTypes;
+import org.solovyev.android.checkout.Purchase;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements CommonInterface {
 
     @BindView(R.id.Login)
     TextView Login;
@@ -46,10 +83,17 @@ public class LoginActivity extends AppCompatActivity {
     RelativeLayout rlReg;
     @BindView(R.id.login_container)
     RelativeLayout loginContainer;
-    SaveDataClass saveDataClass;
-
-    String username = "";
-    String password = "";
+    String username;
+    String password;
+    String username1;
+    String password1;
+    String emailid;
+    ProgressDialog mProgressDialog;
+    Info info;
+    HashMap<String, String> Stringhashmap = new HashMap<>();
+    Inventory mInventory;
+    String TAG = "PAYMENTACTIVITY";
+    private ActivityCheckout mCheckout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +101,22 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         setUnderLine();
-        String username =   saveDataClass.getStr("username");
-        String password =  saveDataClass.getStr("password");
 
-        edtUsername.setText(username);
-        edtPassword.setText(password);
+        if (!SaveDataClass.getUserPassword(LoginActivity.this).equals(null) && (!SaveDataClass.getUserPassword(LoginActivity.this).equals(null))) {
+            username1 = SaveDataClass.getUserName(LoginActivity.this);
+            password1 = SaveDataClass.getUserPassword(LoginActivity.this);
+            edtUsername.setText(username1);
+            edtPassword.setText(password1);
+
+            final Billing billing = MyApplication.get(LoginActivity.this).getBilling();
+            mCheckout = Checkout.forActivity(this, billing);
+            mCheckout.start();
+            mCheckout.createPurchaseFlow(new PurchaseListener());
+
+
+        }
+
+
     }
 
     private void setUnderLine() {
@@ -69,63 +124,128 @@ public class LoginActivity extends AppCompatActivity {
         tvSignUp.setPaintFlags(tvSignUp.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 
-//    private void doneButtonClick() {
-//
-//        username = edtUsername.getText().toString();
-//        password = edtPassword.getText().toString();
-//
-//        ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
-//        Call<RegisterResponse> call = italiaApi.login(username, password);
-//        call.enqueue(new Callback<RegisterResponse>() {
-//            @Override
-//            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
-//
-//                saveDataClass = new SaveDataClass(LoginActivity.this);
-//                saveDataClass.setStr("username", username);
-//                saveDataClass.setStr("password", password);
-//                startActivity(new Intent(LoginActivity.this, HomenavigationActivity.class));
-//                finish();
-//                Log.d("Response1", response.message());
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<RegisterResponse> call, Throwable t) {
-//                Log.d("Response2", t.getMessage());
-//            }
-//
-//
-//        });
-//    }
+    @Override
+    public void onClickContinueInLogin() {
+        startActivity(new Intent(LoginActivity.this, PaymentActivity.class));
 
-    private  void doneButtonClick(){
-
-
-        username = edtUsername.getText().toString();
-        password = edtPassword.getText().toString();
-        Connection.with(this, "http://redex.info/italian_movie/index.php/Api/"+"user_login?"+"email="+username+"&"+"password="+password)
-                .setMethod(Connection.Method.POST)
-                .performNetworkCall(new ResponseCallback() {
-                    @Override
-                    public void onSuccess(JsonObject jsonObject) {
-                        if (jsonObject != null) {
-                            saveDataClass = new SaveDataClass(LoginActivity.this);
-                            saveDataClass.setStr("username", username);
-                            saveDataClass.setStr("password", password);
-                            startActivity(new Intent(LoginActivity.this, HomenavigationActivity.class));
-                             finish();
-
-                        } else
-                            Toast.makeText(LoginActivity.this,"Some thing happing wrong", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onFailure(String error) {
-                        Toast.makeText(LoginActivity.this, "Some thing happing wrong", Toast.LENGTH_SHORT).show();
-                    }
-                }, true);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //do what ever you want here, and get the result from intent like below
+        String myData = data.getStringExtra("listdata");
+        Toast.makeText(LoginActivity.this, data.getStringExtra("listdata"), Toast.LENGTH_SHORT).show();
+    }
+
+    private void doneButtonClick() {
+
+        username = SaveDataClass.getUserName(LoginActivity.this);
+        password = SaveDataClass.getUserPassword(LoginActivity.this);
+
+        ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
+
+
+        Call<LoginResponse> call = italiaApi.login(username, password);
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+
+                LoginResponse loginResponse = response.body();
+
+
+                if (loginResponse.getStatus() == 1) {
+
+
+
+                    mCheckout.whenReady(new Checkout.EmptyListener() {
+                        @Override
+                        public void onReady(BillingRequests requests) {
+                            requests.purchase(ProductTypes.IN_APP, "italias_123", null, mCheckout.getPurchaseFlow());
+                        }
+                    });
+
+
+                } else
+                    startActivity(new Intent(LoginActivity.this, HomenavigationActivity.class));
+
+
+            }
+
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                Log.d("Response2", t.getMessage());
+
+                startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
+            }
+
+
+        });
+    }
+
+    private boolean downloadingVideo(Info info) {
+        if (!username1.equals("") && !password1.equals("")) {
+            Log.v("getvideolink1", info.getVideoLink());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (LoginActivity.this.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    Log.v("permission", "Permission is granted");
+                    // instantiate it within the onCreate method
+                    mProgressDialog = new ProgressDialog(LoginActivity.this);
+                    mProgressDialog.setMessage("Downloading Movie File");
+                    mProgressDialog.setIndeterminate(true);
+                    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    mProgressDialog.setCancelable(true);
+
+// execute this when the downloader must be fired
+                    Log.v("getvideolink12", info.getVideoLink());
+                    final DownloadTask downloadTask = new DownloadTask(LoginActivity.this);
+                    downloadTask.execute(info.getVideoLink());
+
+
+                    //   downloadTask.execute("http://www.storiesinflight.com/js_videosub/jellies.mp4");
+                    mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            downloadTask.cancel(true); //cancel the task
+                        }
+                    });
+
+                    return true;
+                } else {
+
+                    Log.v("permission", "Permission is revoked");
+                    ActivityCompat.requestPermissions((Activity) LoginActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+
+                    mProgressDialog = new ProgressDialog(LoginActivity.this);
+                    mProgressDialog.setMessage("Downloading Movie File");
+                    mProgressDialog.setIndeterminate(true);
+                    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    mProgressDialog.setCancelable(true);
+
+// execute this when the downloader must be fired
+                    final DownloadTask downloadTask = new DownloadTask(LoginActivity.this);
+                    downloadTask.execute(info.getVideoLink());
+
+                    mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            downloadTask.cancel(true); //cancel the task
+                        }
+                    });
+                    return false;
+                }
+            } else { //permission is automatically granted on sdk<23 upon installation
+                Log.v("permission", "Permission is  automatically granted on sdk<23 upon installation");
+                return true;
+            }
+
+        }
+        return true;
+    }
 
     private void forgotPasswordClick() {
         ChangePasswordFragment changePasswordFragment = new ChangePasswordFragment();
@@ -147,5 +267,430 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, RegistrationActivity.class));
                 break;
         }
+    }
+
+    private void setAlertDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this, R.style.MyDialogTheme);
+        builder.setMessage("Do you really want to continue downloading?");
+        AlertDialog dialog = builder.create();
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(LoginActivity.this, HomenavigationActivity.class));
+            }
+        }).show();
+
+    }
+
+    /*private class DownloadTask extends AsyncTask<String, Integer, String> {
+
+        private Context context;
+        private PowerManager.WakeLock mWakeLock;
+
+        public DownloadTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(String... sUrl) {
+            InputStream input = null;
+            OutputStream output = null;
+            HttpURLConnection connection = null;
+            try {
+                URL url = new URL(sUrl[0]);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+
+                // expect HTTP 200 OK, so we don't mistakenly save error report
+                // instead of the file
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    return "Server returned HTTP " + connection.getResponseCode()
+                            + " " + connection.getResponseMessage();
+                }
+
+                // this will be useful to display download percentage
+                // might be -1: server did not report the length
+                int fileLength = connection.getContentLength();
+
+                // download the file
+// create a File object for the parent directory
+                File dir = new File(Environment.getExternalStorageDirectory() + "/ItaliasCinema/");
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+// have the object build the directory structure, if needed.
+
+                final File file = new File(Environment.getExternalStorageDirectory(), "/ItaliasCinema/videos.mp4");
+
+
+                if (!file.exists()) {
+                    // file does not exist, create it
+                    file.createNewFile();
+                }
+
+
+                input = connection.getInputStream();
+
+                output = new FileOutputStream(file);
+                if(output!=null)
+                    output.flush();
+
+                byte data[] = new byte[4096];
+                long total = 0;
+                int count;
+                while ((count = input.read(data)) != -1) {
+                    // allow canceling with back button
+                    if (isCancelled()) {
+                        input.close();
+                        return null;
+                    }
+                    total += count;
+                    // publishing the progress....
+                    if (fileLength > 0) // only if total length is known
+                        publishProgress((int) (total * 100 / fileLength));
+                    output.write(data, 0, count);
+                    Log.d("Downloaderror", fileLength + "");
+                }
+            } catch (Exception e) {
+
+
+                Log.d("Exception1",e+"");
+                return e.toString();
+            } finally {
+                try {
+                    if (output != null)
+                        Log.d("output12",output+"");
+
+                        output.close();
+                    if (input != null)
+                        input.close();
+                } catch (IOException ignored) {
+
+                    Log.d("Exception2",ignored+"");
+                }
+
+
+
+
+                if (connection != null)
+                    connection.disconnect();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // take CPU lock to prevent CPU from going off if the user
+            // presses the power button during download
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                    getClass().getName());
+            mWakeLock.acquire();
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            // if we get here, length is known, now set indeterminate to false
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setMax(100);
+            mProgressDialog.setProgress(progress[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mWakeLock.release();
+            mProgressDialog.dismiss();
+            if (result != null)
+                Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(LoginActivity.this,HomenavigationActivity.class));
+
+
+        }
+
+    }*/
+
+    private class PurchaseListener extends EmptyRequestListener<Purchase> {
+        @Override
+        public void onSuccess(Purchase purchase) {
+            // here you can process the loaded purchase
+            Log.d(TAG, "purchase success");
+        }
+
+        @Override
+        public void onError(int response, Exception e) {
+            // handle errors here
+            Log.d(TAG, "purchase exception:-" + e + "");
+        }
+    }
+
+    private class DownloadTask extends AsyncTask<String, Integer, String> {
+
+        private Context context;
+        private PowerManager.WakeLock mWakeLock;
+
+        public DownloadTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(String... sUrl) {
+            InputStream input = null;
+            OutputStream output = null;
+            HttpURLConnection connection = null;
+            try {
+                URL url = new URL(sUrl[0]);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+
+                // expect HTTP 200 OK, so we don't mistakenly save error report
+                // instead of the file
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    return "Server returned HTTP " + connection.getResponseCode()
+                            + " " + connection.getResponseMessage();
+                }
+
+                // this will be useful to display download percentage
+                // might be -1: server did not report the length
+                int fileLength = connection.getContentLength();
+
+                // download the file
+// create a File object for the parent directory
+                File dir = new File(Environment.getExternalStorageDirectory() + "/ItaliasCinema/");
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+// have the object build the directory structure, if needed.
+
+                final File file = new File(Environment.getExternalStorageDirectory(), "/ItaliasCinema/" + info.getMovieName() + ".mp4");
+
+
+                if (!file.exists()) {
+                    // file does not exist, create it
+                    file.createNewFile();
+                }
+
+
+                input = connection.getInputStream();
+
+                output = new FileOutputStream(file);
+                if (output != null)
+                    output.flush();
+
+                byte data[] = new byte[4096];
+                long total = 0;
+                int count;
+                while ((count = input.read(data)) != -1) {
+                    // allow canceling with back button
+                    if (isCancelled()) {
+                        input.close();
+                        return null;
+                    }
+                    total += count;
+                    // publishing the progress....
+                    if (fileLength > 0) // only if total length is known
+                        publishProgress((int) (total * 100 / fileLength));
+                    output.write(data, 0, count);
+                    Log.d("Downloaderror", fileLength + "");
+                }
+            } catch (Exception e) {
+
+
+                Log.d("Exception1", e + "");
+                return e.toString();
+            } finally {
+                try {
+                    if (output != null)
+                        Log.d("output12", output + "");
+
+                    output.close();
+                    if (input != null)
+                        input.close();
+                } catch (IOException ignored) {
+
+                    Log.d("Exception2", ignored + "");
+                }
+
+
+                if (connection != null)
+                    connection.disconnect();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // take CPU lock to prevent CPU from going off if the user
+            // presses the power button during download
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                    getClass().getName());
+            mWakeLock.acquire();
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            // if we get here, length is known, now set indeterminate to false
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setMax(100);
+            mProgressDialog.setProgress(progress[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mWakeLock.release();
+            mProgressDialog.dismiss();
+            if (result != null)
+                Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
+            else {
+                Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
+                DownloadSrtTask downloadSrtTask = new DownloadSrtTask(LoginActivity.this);
+                downloadSrtTask.execute(Stringhashmap.get(info.getVideoLink()));
+
+
+            }
+
+            setAlertDialog();
+
+        }
+
+    }
+
+    private class DownloadSrtTask extends AsyncTask<String, Integer, String> {
+
+        private Context context;
+        private PowerManager.WakeLock mWakeLock;
+
+        public DownloadSrtTask(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        protected String doInBackground(String... sUrl) {
+            InputStream input = null;
+            OutputStream output = null;
+            HttpURLConnection connection = null;
+            try {
+                URL url = new URL(sUrl[0]);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+
+
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    return "Server returned HTTP " + connection.getResponseCode()
+                            + " " + connection.getResponseMessage();
+                }
+
+                int fileLength = connection.getContentLength();
+
+                File dir = new File(Environment.getExternalStorageDirectory() + "/ItaliasCinema/");
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+
+
+                final File file = new File(Environment.getExternalStorageDirectory(), "/ItaliasCinema/" + info.getMovieName() + ".Srt");
+
+
+                if (!file.exists()) {
+                    // file does not exist, create it
+                    file.createNewFile();
+                }
+
+
+                input = connection.getInputStream();
+
+                output = new FileOutputStream(file);
+                if (output != null)
+                    output.flush();
+
+                byte data[] = new byte[4096];
+                long total = 0;
+                int count;
+                while ((count = input.read(data)) != -1) {
+                    // allow canceling with back button
+                    if (isCancelled()) {
+                        input.close();
+                        return null;
+                    }
+                    total += count;
+                  /*  // publishing the progress....
+                    if (fileLength > 0) // only if total length is known
+                        publishProgress((int) (total * 100 / fileLength))*/
+                    ;
+                    output.write(data, 0, count);
+                    Log.d("SrtDownloaderror", fileLength + "");
+                }
+            } catch (Exception e) {
+
+
+                Log.d("SrtException1", e + "");
+                return e.toString();
+            } finally {
+                try {
+                    if (output != null)
+                        output.close();
+                    if (input != null)
+                        input.close();
+                } catch (IOException ignored) {
+
+                    Log.d("SrtException2", ignored + "");
+                }
+
+
+                if (connection != null)
+                    connection.disconnect();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // take CPU lock to prevent CPU from going off if the user
+            // presses the power button during download
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                    getClass().getName());
+            mWakeLock.acquire();
+            mProgressDialog.show();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            super.onProgressUpdate(progress);
+            // if we get here, length is known, now set indeterminate to false
+            mProgressDialog.setIndeterminate(false);
+            mProgressDialog.setMax(100);
+            mProgressDialog.setProgress(progress[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mWakeLock.release();
+            mProgressDialog.dismiss();
+            if (result != null)
+                Toast.makeText(context, "SrtDownload error: " + result, Toast.LENGTH_LONG).show();
+
+            else
+                Toast.makeText(context, "SrtFile downloaded", Toast.LENGTH_SHORT).show();
+
+
+        }
+
     }
 }

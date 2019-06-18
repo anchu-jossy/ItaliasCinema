@@ -44,6 +44,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter  {
         switch (position) {
             case 0:
                 return new FeatureFragment();
+
             case 1:
                 return new TrendingFragment();
 

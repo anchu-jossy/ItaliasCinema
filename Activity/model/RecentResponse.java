@@ -1,31 +1,17 @@
 package com.example.ajit.italiascinema.Activity.model;
 
-import android.icu.text.IDNA;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class FeatureMovies {
+public class RecentResponse {
     @SerializedName("status")
     @Expose
     private Integer status;
     @SerializedName("info")
     @Expose
-    private List<Info> info = null;
-
-    protected FeatureMovies(Parcel in) {
-        if (in.readByte() == 0) {
-            status = null;
-        } else {
-            status = in.readInt();
-        }
-    }
-
+    private List<RecentInfo> info = null;
 
     public Integer getStatus() {
         return status;
@@ -35,13 +21,13 @@ public class FeatureMovies {
         this.status = status;
     }
 
-    public List<Info> getInfo() {
+    public List<RecentInfo> getInfo() {
         return info;
     }
 
-    public void setInfo(List<Info> info) {
+    public void setInfo(List<RecentInfo> info) {
         this.info = info;
     }
 
-
 }
+

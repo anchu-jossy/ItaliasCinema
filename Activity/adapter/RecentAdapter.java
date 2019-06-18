@@ -1,18 +1,12 @@
 package com.example.ajit.italiascinema.Activity.adapter;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -64,17 +58,26 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-     //   Log.d("recenttump", infoArrayList.get(0).getThumbnails());
-      //  viewHolder.movieName.setText(infoArrayList.get(i).getMovieName());
-        //Glide.with(context).load(infoArrayList.get(i).getThumbnails()).into(viewHolder.imageView);
+        //   Log.d("recenttump", infoArrayList.get(0).getThumbnails());
+        viewHolder.movieName.setText(infoArrayList.get(i).getMovieName());
+        Glide.with(context).load(infoArrayList.get(i).getThumbnails()).into(viewHolder.imageView);
+        viewHolder.imageViewForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String message = "Text I want to share.";
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.putExtra(Intent.EXTRA_TEXT, message);
+                context.startActivity(Intent.createChooser(share, "Share"));
+            }
+        });
         viewHolder.imageViewArrowDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //context.startActivity(new Intent(context, LoginActivity.class));
-                String username =   saveDataClass.getStr("username");
-                String password =  saveDataClass.getStr("password");
 
-                if (!username.equals("") && !password.equals("")) {
+
+              /*  if (!username.equals("") && !password.equals("")) {
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (context.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -131,22 +134,31 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
 
                     }
 
-                }else{
-                    Intent intent = new Intent(context, LoginActivity.class);
-                    context.startActivity(intent);
-
-                }
-
+                }else{*/
+                SaveDataClass.getInstance().setSetIndexForDownloading("Recent");
+                Intent intent = new Intent(context, LoginActivity.class);
+                intent.putExtra("RecentVideodata", infoArrayList.get(i));
+                context.startActivity(intent);
 
             }
+
+
         });
         viewHolder.btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context,VideoActivity.class));
+                SaveDataClass.getInstance().setSetIndexFrom("recent");
+                Intent intent = new Intent(context, VideoActivity.class);
+                intent.putExtra("recentdata", infoArrayList.get(i));
+                context.startActivity(intent);
 
             }
         });
+    }
+
+    @Override
+    public int getItemCount() {
+        return infoArrayList.size();
     }
 
     private class DownloadTask extends AsyncTask<String, Integer, String> {
@@ -181,13 +193,13 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
 
                 // download the file
 // create a File object for the parent directory
-                File dir = new File(Environment.getExternalStorageDirectory()+"/ItaliasCinema/");
+                File dir = new File(Environment.getExternalStorageDirectory() + "/ItaliasCinema/");
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
 // have the object build the directory structure, if needed.
 
-                final   File file = new File(Environment.getExternalStorageDirectory(), "/ItaliasCinema/jellies.mp4");
+                final File file = new File(Environment.getExternalStorageDirectory(), "/ItaliasCinema/jellies.mp4");
 
 
                 if (!file.exists()) {
@@ -198,7 +210,7 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
 
                 input = connection.getInputStream();
                 output = new FileOutputStream(file);
-                Log.d("Downloaderror",file.getAbsolutePath()+"");
+                Log.d("Downloaderror", file.getAbsolutePath() + "");
                 byte data[] = new byte[4096];
                 long total = 0;
                 int count;
@@ -230,6 +242,7 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
             }
             return null;
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -256,17 +269,11 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
             mWakeLock.release();
             mProgressDialog.dismiss();
             if (result != null)
-                Toast.makeText(context,"Download error: "+result, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
             else
-                Toast.makeText(context,"File downloaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
         }
 
-    }
-
-
-    @Override
-    public int getItemCount() {
-        return 5;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

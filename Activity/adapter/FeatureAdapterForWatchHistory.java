@@ -3,6 +3,7 @@ package com.example.ajit.italiascinema.Activity.adapter;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
 import com.example.ajit.italiascinema.Activity.model.Info;
 import com.example.ajit.italiascinema.R;
 
@@ -39,8 +41,9 @@ public class FeatureAdapterForWatchHistory extends RecyclerView.Adapter<FeatureA
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+      //  Glide.with(context).load(R.drawable.dangal).into(viewHolder.imageView);
 
-        Glide.with(context).load(infoArrayList.get(i).getThumbnails()).into(viewHolder.imageView);
+       Glide.with(context).load(infoArrayList.get(i).getThumbnails()).into(viewHolder.imageView);
     }
 
     @Override

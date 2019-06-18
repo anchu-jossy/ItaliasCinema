@@ -14,7 +14,6 @@ import com.example.ajit.italiascinema.Activity.fragments.ClearDialogFragment;
 import com.example.ajit.italiascinema.Activity.fragments.DownloadsQuality;
 import com.example.ajit.italiascinema.Activity.fragments.EditprofileFragment;
 import com.example.ajit.italiascinema.Activity.fragments.LanguagePreferenceFragment;
-import com.example.ajit.italiascinema.Activity.fragments.TrendingVideoDetailsFragment;
 import com.example.ajit.italiascinema.R;
 
 import butterknife.BindView;
@@ -66,7 +65,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
 
-    @OnClick({R.id.edit_profile, R.id.tv_downloads_quality, R.id.tv_clear, R.id.change_password,R.id.tv_language_preference})
+    @OnClick({R.id.edit_profile, R.id.tv_downloads_quality, R.id.tv_clear, R.id.change_password, R.id.tv_language_preference})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.edit_profile:
@@ -97,8 +96,8 @@ public class SettingsActivity extends AppCompatActivity {
                 transaction2.commit();
                 break;
             case R.id.tv_language_preference:
-                LanguagePreferenceFragment languagePreferenceFragment=new LanguagePreferenceFragment();
-                FragmentTransaction transaction3= getSupportFragmentManager().beginTransaction();
+                LanguagePreferenceFragment languagePreferenceFragment = new LanguagePreferenceFragment();
+                FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
                 transaction3.replace(R.id.rl_settings_container, languagePreferenceFragment);
                 transaction3.commit();
                 break;

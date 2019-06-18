@@ -1,30 +1,35 @@
 package com.example.ajit.italiascinema.Activity.fragments;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PowerManager;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
+import com.bumptech.glide.Glide;
+import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
+import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
 import com.example.ajit.italiascinema.Activity.activity.LoginActivity;
+import com.example.ajit.italiascinema.Activity.activity.VideoActivity;
+import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
+import com.example.ajit.italiascinema.Activity.model.Info;
 import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
 import com.example.ajit.italiascinema.R;
 
@@ -40,6 +45,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TrendingVideoDetailsFragment extends Fragment {
 
@@ -50,11 +58,78 @@ public class TrendingVideoDetailsFragment extends Fragment {
     TextView tvFavourites;
     Unbinder unbinder;
     SaveDataClass saveDataClass;
+    @BindView(R.id.videoview)
+    VideoView videoview;
+    @BindView(R.id.imageView_thumpnail)
+    ImageView imageViewThumpnail;
+    @BindView(R.id.ll_download)
+    LinearLayout llDownload;
+    @BindView(R.id.ll_share)
+    LinearLayout llShare;
+    @BindView(R.id.ll_favourites)
+    LinearLayout llFavourites;
+    @BindView(R.id.ll_video_function)
+    LinearLayout llVideoFunction;
+    @BindView(R.id.btn_play)
+    ImageButton btnPlay;
+    @BindView(R.id.youtubePlayerViewer)
+    FrameLayout youtubePlayerViewer;
+    @BindView(R.id.tv_filmname)
+    TextView tvFilmname;
+    @BindView(R.id.tv_starcost)
+    TextView tvStarcost;
+    @BindView(R.id.right_tv_starcost)
+    TextView rightTvStarcost;
+    @BindView(R.id.ll_starcast)
+    LinearLayout llStarcast;
+    @BindView(R.id.tv_director)
+    TextView tvDirector;
+    @BindView(R.id.right_tv_director)
+    TextView rightTvDirector;
+    @BindView(R.id.ll_directer)
+    LinearLayout llDirecter;
+    @BindView(R.id.tv_comedy)
+    TextView tvComedy;
+    @BindView(R.id.right_tv_comedy)
+    TextView rightTvComedy;
+    @BindView(R.id.ll_genre)
+    LinearLayout llGenre;
+    @BindView(R.id.tv_released_date)
+    TextView tvReleasedDate;
+    @BindView(R.id.right_tv_released_date)
+    TextView rightTvReleasedDate;
+    @BindView(R.id.ll_released_date)
+    LinearLayout llReleasedDate;
+    @BindView(R.id.ll_time)
+    LinearLayout llTime;
+    @BindView(R.id.viewline2)
+    View viewline2;
+    @BindView(R.id.tv_details)
+    TextView tvDetails;
+    @BindView(R.id.tv_details_data)
+    TextView tvDetailsData;
+    Info info;
+    @BindView(R.id.tv_time_duration)
+    TextView tvTimeDuration;
+    @BindView(R.id.rating_bar)
+    RatingBar ratingBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+    }
+
+    private void setData(Info info) {
+        tvFilmname.setText(info.getMovieName());
+        rightTvStarcost.setText(info.getStarCast());
+        rightTvDirector.setText(info.getDirector());
+        rightTvComedy.setText(info.getGenre());
+        rightTvReleasedDate.setText(info.getDate());
+        tvDetailsData.setText(info.getDetails());
+        tvTimeDuration.setText("TimeDuration is   " + info.getDurationTime());
+        ratingBar.setNumStars(Integer.parseInt(info.getRating()));
+        Glide.with(getContext()).load(info.getThumbnails()).into(imageViewThumpnail);
     }
 
     @Override
@@ -64,14 +139,25 @@ public class TrendingVideoDetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_treending_video_details, container, false);
 
         unbinder = ButterKnife.bind(this, view);
+        Bundle args = getArguments();
+
+
+        if (args != null) {
+            info = args.getParcelable("trendingdata");
+            Log.w("infodata", info.getDirector());
+            setData(info);
+
+        } else {
+            Log.w("GetIncidencia", "Arguments expected, but missing");
+        }
         return view;
     }
 
-    @OnClick({R.id.ll_download, R.id.ll_share, R.id.ll_favourites})
+    @OnClick({R.id.ll_download, R.id.ll_share, R.id.ll_favourites, R.id.btn_play})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ll_download:
-                isStoragePermissionGranted();
+                isStoragePermissionGranted(info);
                 break;
             case R.id.ll_share:
                 String message = "Text I want to share.";
@@ -88,18 +174,53 @@ public class TrendingVideoDetailsFragment extends Fragment {
                 } else {
                     Drawable top = getResources().getDrawable(R.drawable.res_favourites);
                     tvFavourites.setCompoundDrawablesWithIntrinsicBounds(null, top, null, null);
+                    setFavouriteApi();
                 }
-
+                break;
+            case R.id.btn_play:
+                SaveDataClass.getInstance().setSetIndexFrom("trending");
+                Intent intent = new Intent(getContext(), VideoActivity.class);
+                intent.putExtra("trendingvideodata", info);
+                startActivity(intent);
                 break;
         }
     }
 
-    public boolean isStoragePermissionGranted() {
+    private void setFavouriteApi() {
 
-        String username = saveDataClass.getStr("username");
-        String password = saveDataClass.getStr("password");
 
-        if (!username.equals("") && !password.equals("")) {
+        ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
+
+        Call<FeatureMoviesResponse> call = italiaApi.setFavourites(SaveDataClass.getUserID(getContext()), info.getMovieId());
+
+        call.enqueue(new Callback<FeatureMoviesResponse>() {
+            @Override
+            public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {
+
+
+                FeatureMoviesResponse featureMoviesResponse = response.body();
+
+                if (featureMoviesResponse.getStatus() == 1) {
+                    Toast.makeText(getActivity(), "Added as Favourite", Toast.LENGTH_SHORT).show();
+                } else {
+                    /*  Toast.makeText(getActivity(),response.body().get, Toast.LENGTH_SHORT).show();*/
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
+                Log.d("Fetaure1", t.getMessage());
+            }
+        });
+
+    }
+
+    public boolean isStoragePermissionGranted(Info info) {
+
+        //String username = SaveDataClass.getInstance().getUsername();
+        //   String password = saveDataClass.getInstance().getPassword();
+    /*    if (!SaveDataClass.getInstance().getUsername().equals("") && !SaveDataClass.getInstance().getPassword().equals("")) {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (getContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -155,11 +276,15 @@ public class TrendingVideoDetailsFragment extends Fragment {
                 return true;
             }
 
-        } else {
-            Intent intent = new Intent(getContext(), LoginActivity.class);
-            startActivity(intent);
+        } else {*/
+        Intent intent = new Intent(getContext(), LoginActivity.class);
+        intent.putExtra("TrendingVideoData",info);
 
-        }
+        SaveDataClass.getInstance().setSetIndexForDownloading("Trending");
+
+        startActivity(intent);
+
+        //  }
 
         return false;
     }

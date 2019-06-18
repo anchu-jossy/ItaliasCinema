@@ -1,19 +1,12 @@
 package com.example.ajit.italiascinema.Activity.adapter;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,13 +41,15 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ViewHolder
 
     Context context;
     ArrayList<Info> infoArrayList;
-    ArrayList<Bitmap> bitmapArrayList;
+
     ProgressDialog mProgressDialog;
     SaveDataClass saveDataClass;
-    public LatestAdapter(Context context, ArrayList<Info> infoArrayList, ArrayList<Bitmap> bipmapArrayList) {
+    Info info;
+
+    public LatestAdapter(Context context, ArrayList<Info> infoArrayList) {
         this.context = context;
         this.infoArrayList = infoArrayList;
-        this.bitmapArrayList = bipmapArrayList;
+
     }
 
     @NonNull
@@ -69,18 +64,31 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
         viewHolder.imageViewThumpnail.setVisibility(View.VISIBLE);
-    //    viewHolder.videoview.setVisibility(View.GONE);
-        Glide.with(context).load(bitmapArrayList.get(0)).into(viewHolder.imageViewThumpnail);
 
+        Glide.with(context).load(infoArrayList.get(i).getThumbnails()).into(viewHolder.imageViewThumpnail);
+        viewHolder.imageViewForward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String message = infoArrayList.get(i).getVideoLink();
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.putExtra(Intent.EXTRA_TEXT, message);
+                context.startActivity(Intent.createChooser(share, "Share"));
+            }
+        });
         viewHolder.movieName.setText(infoArrayList.get(i).getMovieName());
         viewHolder.btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             /*   viewHolder.btnPlay.setVisibility(View.GONE);*/
-              //  viewHolder.videoview.setVisibility(View.VISIBLE);
-            //    viewHolder.imageViewThumpnail.setVisibility(View.GONE);
-             context.startActivity(new Intent(context,VideoActivity.class));
-              //  setVideo(viewHolder);
+                /*   viewHolder.btnPlay.setVisibility(View.GONE);*/
+                //  viewHolder.videoview.setVisibility(View.VISIBLE);
+                //    viewHolder.imageViewThumpnail.setVisibility(View.GONE);
+                SaveDataClass.getInstance().setSetIndexFrom("latest");
+                Intent intent = new Intent(context, VideoActivity.class);
+                info = infoArrayList.get(i);
+                intent.putExtra("latestdata", info);
+                context.startActivity(intent);
+                //  setVideo(viewHolder);
             }
         });
       /*  viewHolder.btnPause.setOnClickListener(new View.OnClickListener() {
@@ -100,16 +108,20 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ViewHolder
         viewHolder.imageViewArrowDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SaveDataClass.getInstance().setSetIndexForDownloading("Latest");
 
-                String username =   saveDataClass.getStr("username");
-                String password =  saveDataClass.getStr("password");
+                Intent intent = new Intent(context, LoginActivity.class);
+                intent.putExtra("LatestVideodata", infoArrayList.get(i));
 
-                if (!username.equals("") && !password.equals("")) {
+                Log.d("latestdata", infoArrayList.get(i).getVideoLink());
+                context.startActivity(intent);
+
+                /*if (!SaveDataClass.getInstance().getUsername().equals("") && !SaveDataClass.getInstance().getPassword().equals("")) {
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (context.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
                                 == PackageManager.PERMISSION_GRANTED) {
-                            Log.v("permission","Permission is granted");
+                            Log.v("permission", "Permission is granted");
                             // instantiate it within the onCreate method
                             mProgressDialog = new ProgressDialog(context);
                             mProgressDialog.setMessage("Downloading Movie File");
@@ -133,8 +145,8 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ViewHolder
 
                         } else {
 
-                            Log.v("permission","Permission is revoked");
-                            ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            Log.v("permission", "Permission is revoked");
+                            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
 
                             mProgressDialog = new ProgressDialog(context);
                             mProgressDialog.setMessage("Downloading Movie File");
@@ -155,18 +167,15 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ViewHolder
                             });
 
                         }
-                    }
-                    else { //permission is automatically granted on sdk<23 upon installation
-                        Log.v("permission","Permission is granted");
+                    } else { //permission is automatically granted on sdk<23 upon installation
+                        Log.v("permission", "Permission is granted");
 
                     }
 
-                }else{
-                    Intent intent = new Intent(context, LoginActivity.class);
-                    context.startActivity(intent);
+                } else {
 
-                }
 
+                }*/
 
 
             }
@@ -194,8 +203,9 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return 3;
+        return infoArrayList.size();
     }
+
     private class DownloadTask extends AsyncTask<String, Integer, String> {
 
         private Context context;
@@ -228,13 +238,13 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ViewHolder
 
                 // download the file
 // create a File object for the parent directory
-                File dir = new File(Environment.getExternalStorageDirectory()+"/ItaliasCinema/");
+                File dir = new File(Environment.getExternalStorageDirectory() + "/ItaliasCinema/");
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
 // have the object build the directory structure, if needed.
 
-                final   File file = new File(Environment.getExternalStorageDirectory(), "/ItaliasCinema/jellies.mp4");
+                final File file = new File(Environment.getExternalStorageDirectory(), "/ItaliasCinema/jellies.mp4");
 
 
                 if (!file.exists()) {
@@ -245,7 +255,7 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ViewHolder
 
                 input = connection.getInputStream();
                 output = new FileOutputStream(file);
-                Log.d("Downloaderror",file.getAbsolutePath()+"");
+                Log.d("Downloaderror", file.getAbsolutePath() + "");
                 byte data[] = new byte[4096];
                 long total = 0;
                 int count;
@@ -277,6 +287,7 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ViewHolder
             }
             return null;
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -303,9 +314,9 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ViewHolder
             mWakeLock.release();
             mProgressDialog.dismiss();
             if (result != null)
-                Toast.makeText(context,"Download error: "+result, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Download error: " + result, Toast.LENGTH_LONG).show();
             else
-                Toast.makeText(context,"File downloaded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "File downloaded", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -327,9 +338,10 @@ public class LatestAdapter extends RecyclerView.Adapter<LatestAdapter.ViewHolder
         ImageButton btnPlay;
         @BindView(R.id.imageView_thumpnail)
         ImageView imageViewThumpnail;
-       /* @BindView(R.id.btn_pause)
-        ImageButton btnPause;
-*/
+
+        /* @BindView(R.id.btn_pause)
+         ImageButton btnPause;
+ */
         ViewHolder(View itemView) {
             super(itemView);
 

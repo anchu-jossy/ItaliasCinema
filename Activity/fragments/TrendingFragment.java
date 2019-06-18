@@ -1,6 +1,7 @@
 package com.example.ajit.italiascinema.Activity.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -11,13 +12,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
 import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
+import com.example.ajit.italiascinema.Activity.activity.TendingDetailsActivity;
 import com.example.ajit.italiascinema.Activity.adapter.TrendingAdapter;
 import com.example.ajit.italiascinema.Activity.interfaces.CommonInterface;
-import com.example.ajit.italiascinema.Activity.model.FeatureMovies;
+import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
 import com.example.ajit.italiascinema.Activity.model.Info;
+import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
 import com.example.ajit.italiascinema.R;
 
 import java.util.ArrayList;
@@ -33,22 +37,22 @@ import retrofit2.Response;
 public class TrendingFragment extends Fragment implements CommonInterface {
 
 
-    ArrayList<Info> infoArrayList;
+    ArrayList<Info> infoArrayList = new ArrayList<>();
 
     Unbinder unbinder;
     TrendingAdapter trending1Adapter;
     @BindView(R.id.trending_recyclerview)
     RecyclerView trendingRecyclerview;
-
-
+    Bundle args;
+    @BindView(R.id.progress_loader)
+    ProgressBar progressLoader;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        args = new Bundle();
 
-        infoArrayList = new ArrayList<>();
-        getFeatureMovies();
     }
 
     @Override
@@ -59,21 +63,57 @@ public class TrendingFragment extends Fragment implements CommonInterface {
         ButterKnife.bind(this, view);
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
 
-
-
-
         return view;
 
 
     }
 
-    private ArrayList<Info> getFeatureMovies() {
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getTrendingMovies();
+
+    }
+
+    private void getTrendingMovies() {
+        if(progressLoader!=null)
+        progressLoader.setVisibility(View.VISIBLE);
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
 
-        Call<FeatureMovies> call = italiaApi.getFeatureMovies();
-        call.enqueue(new Callback<FeatureMovies>() {
+        Call<FeatureMoviesResponse> call = italiaApi.getTrendingData(SaveDataClass.getUserID(getContext()), "trending");
+        call.enqueue(new Callback<FeatureMoviesResponse>() {
             @Override
-            public void onResponse(Call<FeatureMovies> call, Response<FeatureMovies> response) {
+            public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {
+                FeatureMoviesResponse featureMoviesResponse = response.body();
+
+                if (featureMoviesResponse.getStatus() == 1) {
+                    if(progressLoader!=null)
+                    progressLoader.setVisibility(View.GONE);
+                    infoArrayList.clear();
+                    for (int i = 0; i < featureMoviesResponse.getInfo().size(); i++) {
+                        infoArrayList.add(featureMoviesResponse.getInfo().get(i));
+                    }
+
+                    trendingRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                    trending1Adapter = new TrendingAdapter(getContext(), TrendingFragment.this, infoArrayList);
+                    trendingRecyclerview.setAdapter(trending1Adapter);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
+                if(progressLoader!=null)
+                progressLoader.setVisibility(View.GONE);
+                Log.d("trendingfailure", t.getMessage());
+            }
+        });
+       /* call.enqueue(new Callback<FeatureMoviesResponse>() {
+            @Override
+            public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {
+                FeatureMoviesResponse featureMoviesResponse = response.body();
+
+                if (featureMoviesResponse.getStatus()==1) {
 
 
                 if (infoArrayList != null) {
@@ -83,7 +123,7 @@ public class TrendingFragment extends Fragment implements CommonInterface {
 
                 for (int i = 0; i < response.body().getInfo().size(); i++) {
                     Info info = new Info();
-                    info = response.body().getInfo().get(i);
+
                     infoArrayList.add(info);
                     Log.d("Fetaure5", infoArrayList.get(i).getVideoLink() + "" + "");
 
@@ -96,23 +136,32 @@ public class TrendingFragment extends Fragment implements CommonInterface {
             }
 
             @Override
-            public void onFailure(Call<FeatureMovies> call, Throwable t) {
+            public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
                 Log.d("Fetaure1", t.getMessage());
             }
         });
         return infoArrayList;
 
+    }*/
+
     }
 
-
     @Override
-    public void trendingVideoOnclick() {
+    public void trendingVideoOnclick(Info info) {
 
         TrendingVideoDetailsFragment trendingVideoDetailsFragment = new TrendingVideoDetailsFragment();
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.addToBackStack("trending fragment");
+
+     /*   args.putParcelable("trendingdata",info);
+        trendingVideoDetailsFragment.setArguments(args);
         fragmentTransaction.replace(R.id.container, trendingVideoDetailsFragment);
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
+
+        //
+        Intent intent = new Intent(getContext(), TendingDetailsActivity.class);
+        intent.putExtra("trendingdata", info);
+        startActivity(intent);
     }
 
 
@@ -134,9 +183,6 @@ public class TrendingFragment extends Fragment implements CommonInterface {
 
 
     }
-
-
-
 
 
 }

@@ -13,14 +13,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
 import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
 import com.example.ajit.italiascinema.Activity.adapter.LatestAdapter;
 import com.example.ajit.italiascinema.Activity.adapter.LatestImageViewAdapter;
-import com.example.ajit.italiascinema.Activity.model.FeatureMovies;
+import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
 import com.example.ajit.italiascinema.Activity.model.Info;
+import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
 import com.example.ajit.italiascinema.R;
 
 import java.util.ArrayList;
@@ -45,6 +48,8 @@ public class LatestFragment extends Fragment {
     LatestImageViewAdapter latestImageViewAdapter;
     ArrayList<Info> infoArrayList;
     ArrayList<Bitmap> bipmapArrayList;
+    @BindView(R.id.progress_loader)
+    ProgressBar progressLoader;
 
     public static Fragment newInstance(String s, String s1) {
         LatestFragment fragment = new LatestFragment();
@@ -77,7 +82,13 @@ public class LatestFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getFeatureMovies();
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getLatestMovies();
     }
 
     @Override
@@ -87,43 +98,51 @@ public class LatestFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_latest, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         return view;
     }
 
-    private void setAdapter(ArrayList<Info> infoArrayList, ArrayList<Bitmap> bipmapArrayList) {
+    private void setAdapter(ArrayList<Info> infoArrayList) {
 
-        if(latestRecyclerview!=null){
+        if (latestRecyclerview != null) {
             latestRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-            latestAdapter = new LatestAdapter(getContext(), infoArrayList, bipmapArrayList);
+            latestAdapter = new LatestAdapter(getContext(), infoArrayList);
             latestRecyclerview.setAdapter(latestAdapter);
         }
 
     }
 
-    private void getFeatureMovies() {
+    private void getLatestMovies() {
+        if (progressLoader != null)
+            progressLoader.setVisibility(View.VISIBLE);
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
-
-        Call<FeatureMovies> call = italiaApi.getFeatureMovies();
-        call.enqueue(new Callback<FeatureMovies>() {
+        Call<FeatureMoviesResponse> call = italiaApi.getLatestData(SaveDataClass.getUserID(getContext()), "latest");
+        call.enqueue(new Callback<FeatureMoviesResponse>() {
             @Override
-            public void onResponse(Call<FeatureMovies> call, Response<FeatureMovies> response) {
+            public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {
+                if (progressLoader != null)
+                    progressLoader.setVisibility(View.GONE);
                 infoArrayList = new ArrayList<>();
-
-                if (infoArrayList != null) {
+                FeatureMoviesResponse featureMoviesResponse = response.body();
+                if (featureMoviesResponse.getStatus() == 1) {
                     infoArrayList.clear();
+
+
+                    for (int i = 0; i < featureMoviesResponse.getInfo().size(); i++) {
+
+
+                        infoArrayList.add(featureMoviesResponse.getInfo().get(i));
+
+
+                    }
+
+                    setAdapter(infoArrayList);
+
                 }
+/*
 
 
-                for (int i = 0; i < response.body().getInfo().size(); i++) {
-                    Info info = new Info();
-                    info = response.body().getInfo().get(i);
-                    infoArrayList.add(info);
-                    Log.d("Fetaure123", infoArrayList.get(i).getVideoLink() + "" + "");
-
-
-                }
 
                 try {
                     new DownloadImage("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4").execute();
@@ -134,12 +153,15 @@ public class LatestFragment extends Fragment {
 
                     Log.d("Throwable", throwable.getMessage());
                     throwable.printStackTrace();
-                }
+                }*/
             }
 
             @Override
-            public void onFailure(Call<FeatureMovies> call, Throwable t) {
+            public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
                 Log.d("Fetaure1", t.getMessage());
+
+                if (progressLoader != null)
+                    progressLoader.setVisibility(View.GONE);
             }
         });
 
@@ -192,13 +214,12 @@ public class LatestFragment extends Fragment {
             bipmapArrayList = new ArrayList<>();
             bipmapArrayList.add(bitmap);
             Log.d("bipmap2", bitmap + "");
-            if(latestHorizontalRecyclerview!=null) {
+            /*if (latestHorizontalRecyclerview != null) {
                 latestHorizontalRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
                 latestImageViewAdapter = new LatestImageViewAdapter(getContext(), bipmapArrayList);
 
                 latestHorizontalRecyclerview.setAdapter(latestImageViewAdapter);
-            }
-                setAdapter(infoArrayList, bipmapArrayList);
+            }*/
 
 
             super.onPostExecute(bitmap);

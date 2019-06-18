@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.media.MediaMetadataRetriever;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -24,8 +23,9 @@ import com.example.ajit.italiascinema.Activity.CenterZoomLayoutManager;
 import com.example.ajit.italiascinema.Activity.adapter.FeatureAdapterForVideo;
 import com.example.ajit.italiascinema.Activity.adapter.FeatureAdapterForWatchHistory;
 import com.example.ajit.italiascinema.Activity.interfaces.DotsIndicatorDecoration;
-import com.example.ajit.italiascinema.Activity.model.FeatureMovies;
+import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
 import com.example.ajit.italiascinema.Activity.model.Info;
+import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
 import com.example.ajit.italiascinema.R;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.Pivot;
@@ -53,11 +53,14 @@ public class FeatureFragment extends Fragment {
     @BindView(R.id.tv_watch_history)
     TextView tvWatchHistory;
 
-    ArrayList<Info> infoArrayList;
-
+    ArrayList<Info> infoArrayList = new ArrayList<>();
+    ArrayList<Info> infoHistoryArrayList = new ArrayList<>();
+    ArrayList<Info> allInfoArrayList = new ArrayList<>();
     @BindView(R.id.video_recyclerview)
     RecyclerView videoRecyclerview;
     ArrayList<Bitmap> bitmapArrayList;
+    @BindView(R.id.progress_loader)
+    ProgressBar progressLoader;
 
 
     public FeatureFragment() {
@@ -89,18 +92,7 @@ public class FeatureFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        infoArrayList = new ArrayList<>();
 
-        getFeatureMovies();
-
-        try {
-            new DownloadImage("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4").execute();
-            Log.d("Bitmap2", infoArrayList.get(0).getVideoLink() + "");
-        } catch (Throwable throwable) {
-
-            Log.d("Throwable", throwable.getMessage());
-            throwable.printStackTrace();
-        }
     }
 
     @Override
@@ -110,15 +102,35 @@ public class FeatureFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_feature, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-
+        progressLoader.setVisibility(View.GONE);
+        getFeatureMovies();
         return view;
     }
 
-    private void setVideoAdapter(ArrayList<Bitmap> bitmapArrayList)
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+
+        try {
+
+
+            // new DownloadImage("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4").execute();
+
+        } catch (Throwable throwable) {
+
+            Log.d("Throwable", throwable.getMessage());
+            throwable.printStackTrace();
+        }
+    }
+
+    private void setVideoAdapter(ArrayList<Info> infoArrayList)
 
     {
 
-        FeatureAdapterForVideo featureAdapterForVideo = new FeatureAdapterForVideo(getContext(), bitmapArrayList);
+        FeatureAdapterForVideo featureAdapterForVideo = new FeatureAdapterForVideo(getContext(), infoArrayList);
         CenterZoomLayoutManager linearLayoutManager =
                 new CenterZoomLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
 
@@ -141,6 +153,7 @@ public class FeatureFragment extends Fragment {
     }
 
     private void setImagePicker(ArrayList<Info> infoArrayList) {
+
         for (int i = 0; i < infoArrayList.size(); i++) {
             FeatureAdapterForWatchHistory featureAdapterForWatchHistory = new FeatureAdapterForWatchHistory(getContext(), infoArrayList);
             picker.setAdapter(featureAdapterForWatchHistory);
@@ -154,38 +167,123 @@ public class FeatureFragment extends Fragment {
                     .setPivotY(Pivot.Y.BOTTOM) // CENTER is a default one
                     .build());
         }
-
     }
 
-    private ArrayList<Info> getFeatureMovies() {
+
+    private void getFeatureMovies() {
+
+        progressLoader.setVisibility(View.VISIBLE);
+        Log.d("sizeoflist123", SaveDataClass.getUserID(getContext()));
+
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
 
-        Call<FeatureMovies> call = italiaApi.getFeatureMovies();
-        call.enqueue(new Callback<FeatureMovies>() {
+        Call<FeatureMoviesResponse> call = italiaApi.getFeatureMovies(SaveDataClass.getUserID(getContext()), "feature");
+
+        call.enqueue(new Callback<FeatureMoviesResponse>() {
             @Override
-            public void onResponse(Call<FeatureMovies> call, Response<FeatureMovies> response) {
+            public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {
 
+                progressLoader.setVisibility(View.GONE);
+                FeatureMoviesResponse featureMoviesResponse = response.body();
 
-                if (infoArrayList != null) {
+                if (featureMoviesResponse.getStatus() == 1) {
+
                     infoArrayList.clear();
-                }
+                    for (int i = 0; i < featureMoviesResponse.getInfo().size(); i++) {
+                        infoArrayList.add(featureMoviesResponse.getInfo().get(i));
 
+                    }
+                    getWatchHistoryData();
 
-                for (int i = 0; i < response.body().getInfo().size(); i++) {
-                    Info info = new Info();
-                    info = response.body().getInfo().get(i);
-                    infoArrayList.add(info);
-                    Log.d("Fetaure123", infoArrayList.get(i).getVideoLink() + "" + "");
-                    setImagePicker(infoArrayList);
-                    // setSliderViews(infoArrayList);
+                    setVideoAdapter(infoArrayList);
+
 
                 }
-
 
             }
 
             @Override
-            public void onFailure(Call<FeatureMovies> call, Throwable t) {
+            public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
+                Log.d("Fetaure1", t.getMessage());
+                progressLoader.setVisibility(View.GONE);
+            }
+        });
+
+    }
+
+    private void getWatchHistoryData() {
+        if(progressLoader!=null)
+        progressLoader.setVisibility(View.VISIBLE);
+        ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
+
+        Call<FeatureMoviesResponse> call = italiaApi.getWatchHistory(SaveDataClass.getUserID(getContext()));
+
+        call.enqueue(new Callback<FeatureMoviesResponse>() {
+            @Override
+            public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {
+                if(progressLoader!=null)
+                progressLoader.setVisibility(View.GONE);
+
+                FeatureMoviesResponse featureMoviesResponse = response.body();
+
+                if (featureMoviesResponse.getStatus() == 1) {
+
+                    infoHistoryArrayList.clear();
+                    for (int i = 0; i < featureMoviesResponse.getInfo().size(); i++) {
+                        infoHistoryArrayList.add(featureMoviesResponse.getInfo().get(i));
+                    }
+
+                    if (infoHistoryArrayList.size() == 0) {
+                        tvWatchHistory.setText("All Movies");
+                        setImagePicker(getSearchData());
+                    } else if (infoArrayList.size() != 0) {
+                        tvWatchHistory.setText("Watch history");
+                        setImagePicker(infoHistoryArrayList);
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
+                if(progressLoader!=null)
+                progressLoader.setVisibility(View.GONE);
+                Log.d("Fetaure1", t.getMessage());
+            }
+        });
+
+    }
+
+
+    private ArrayList<Info> getSearchData() {
+
+        ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
+
+        Call<FeatureMoviesResponse> call = italiaApi.getSearchData(SaveDataClass.getUserID(getContext()));
+
+        call.enqueue(new Callback<FeatureMoviesResponse>() {
+            @Override
+            public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {
+
+
+                FeatureMoviesResponse featureMoviesResponse = response.body();
+
+                if (featureMoviesResponse.getStatus() == 1) {
+
+                    allInfoArrayList.clear();
+                    for (int i = 0; i < featureMoviesResponse.getInfo().size(); i++) {
+                        allInfoArrayList.add(featureMoviesResponse.getInfo().get(i));
+                        Log.d("Alldataarray", allInfoArrayList.get(0).getThumbnails());
+                    }
+
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
                 Log.d("Fetaure1", t.getMessage());
             }
         });
@@ -212,7 +310,7 @@ public class FeatureFragment extends Fragment {
         unbinder.unbind();
     }
 
-
+/*
     class DownloadImage extends AsyncTask<Void, Void, Bitmap> {
 /// method for creating thumpnail in android
 
@@ -244,5 +342,5 @@ public class FeatureFragment extends Fragment {
             Log.d("bipmap2", bitmap + "");
             super.onPostExecute(bitmap);
         }
-    }
+    }*/
 }

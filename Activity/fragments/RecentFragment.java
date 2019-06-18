@@ -13,8 +13,9 @@ import android.view.ViewGroup;
 import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
 import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
 import com.example.ajit.italiascinema.Activity.adapter.RecentAdapter;
-import com.example.ajit.italiascinema.Activity.model.FeatureMovies;
+import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
 import com.example.ajit.italiascinema.Activity.model.Info;
+import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
 import com.example.ajit.italiascinema.R;
 
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class RecentFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        getRecentMovies();
     }
 
     @Override
@@ -55,41 +56,46 @@ public class RecentFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         recentRecyclerview.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        RecentAdapter recentAdapter = new RecentAdapter(getContext(), infoArrayList);
-        recentRecyclerview.setAdapter(recentAdapter);
 
-        recentAdapter.notifyDataSetChanged();
-        getFeatureMovies();
+        // getFeatureMovies();
         return view;
     }
 
-    private void getFeatureMovies() {
+    private void getRecentMovies() {
+
+
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
 
-        Call<FeatureMovies> call = italiaApi.getFeatureMovies();
-        call.enqueue(new Callback<FeatureMovies>() {
+        Call<FeatureMoviesResponse> call = italiaApi.getRecentData("44", "recent");
+        call.enqueue(new Callback<FeatureMoviesResponse>() {
             @Override
-            public void onResponse(Call<FeatureMovies> call, Response<FeatureMovies> response) {
+            public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {
                 infoArrayList = new ArrayList<>();
-
-                if (infoArrayList != null) {
-                    infoArrayList.clear();
-                }
-
-
-                for (int i = 0; i < response.body().getInfo().size(); i++) {
-                    Info info = new Info();
-                    info = response.body().getInfo().get(i);
-                    infoArrayList.add(info);
-                    Log.d("Fetaure123", infoArrayList.get(i).getVideoLink() + "" + "");
+                if (response.body().getStatus() == 1) {
+                    if (infoArrayList != null) {
+                        infoArrayList.clear();
 
 
+                        for (int i = 0; i < response.body().getInfo().size(); i++) {
+
+                            Info info = response.body().getInfo().get(i);
+                            infoArrayList.add(info);
+                            Log.d("Fetaure123", infoArrayList.get(i).getVideoLink() + "" + "");
+
+
+                        }
+                        RecentAdapter recentAdapter = new RecentAdapter(getContext(), infoArrayList);
+                        recentRecyclerview.setAdapter(recentAdapter);
+
+                        recentAdapter.notifyDataSetChanged();
+
+                    }
                 }
 
             }
 
             @Override
-            public void onFailure(Call<FeatureMovies> call, Throwable t) {
+            public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
                 Log.d("Fetaure1", t.getMessage());
             }
         });

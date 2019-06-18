@@ -1,6 +1,5 @@
 package com.example.ajit.italiascinema.Activity.activity;
 
-import android.app.Notification;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,6 +13,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,21 +22,33 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
+import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
 import com.example.ajit.italiascinema.Activity.adapter.MyPagerAdapter;
-import com.example.ajit.italiascinema.Activity.adapter.SearchPagerAdapter;
+import com.example.ajit.italiascinema.Activity.adapter.SearchAdapter;
 import com.example.ajit.italiascinema.Activity.fragments.AboutUsFragment;
 import com.example.ajit.italiascinema.Activity.fragments.FavouritesFragment;
+import com.example.ajit.italiascinema.Activity.interfaces.CommonInterface;
+import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
+import com.example.ajit.italiascinema.Activity.model.Info;
 import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
 import com.example.ajit.italiascinema.R;
 import com.nex3z.notificationbadge.NotificationBadge;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomenavigationActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, CommonInterface {
+    public static Object get;
     MenuItem menuSearch, menuBell, menuApp;
     Boolean isSearchClicked = false;
     int count;
@@ -43,24 +56,34 @@ public class HomenavigationActivity extends AppCompatActivity
     CoordinatorLayout container;
     @BindView(R.id.home_container)
     ConstraintLayout homeContainer;
-    @BindView(R.id.search_container)
-    ConstraintLayout searchContainer;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.pager_header)
     PagerTabStrip pagerHeader;
     @BindView(R.id.vpPager)
     ViewPager vpPager;
-    @BindView(R.id.pager_header_search)
+    /*@BindView(R.id.pager_header_search)
     PagerTabStrip pagerHeaderSearch;
     @BindView(R.id.vpPagerSearch)
-    ViewPager vpPagerSearch;
+    ViewPager vpPagerSearch;*/
     @BindView(R.id.nav_view)
     NavigationView navView;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
     MyPagerAdapter adapterViewPager;
     SaveDataClass saveDataClass;
+    String notificationCount;
+    @BindView(R.id.search_recyclerview)
+    RecyclerView searchRecyclerview;
+
+    ArrayList<Info> infoArrayList = new ArrayList<>();
+    @BindView(R.id.tv_recent)
+    TextView tvRecent;
+    @BindView(R.id.search_container)
+    RelativeLayout searchContainer;
+    SearchAdapter searchAdapter;
+    FeatureMoviesResponse featureMoviesResponse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +92,17 @@ public class HomenavigationActivity extends AppCompatActivity
         ButterKnife.bind(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         settingDrawerLayout();
-
         settingNavigationView();
-
         setttingPagerHeaderForSearch();
-
         settingPagerHeader();
+
+        Log.d(" SaveDataClass.", SaveDataClass.getEmailId(HomenavigationActivity.this));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
 
     }
@@ -91,15 +117,49 @@ public class HomenavigationActivity extends AppCompatActivity
 
     }
 
+    private String getNotificationCount(NotificationBadge notificationBadge) {
+
+        ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
+
+        Call<FeatureMoviesResponse> call = italiaApi.getNotification(SaveDataClass.getUserID(HomenavigationActivity.this));
+
+        call.enqueue(new Callback<FeatureMoviesResponse>() {
+            @Override
+            public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {
+
+
+                featureMoviesResponse = response.body();
+
+                if (featureMoviesResponse.getStatus() == 1) {
+
+                    SaveDataClass.getInstance().setNotificationcount(featureMoviesResponse.getCount());
+                    notificationCount = featureMoviesResponse.getCount();
+                    Log.d("Activity123", featureMoviesResponse.getCount() + "");
+                    notificationBadge.setNumber(Integer.parseInt(featureMoviesResponse.getCount()));
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
+
+            }
+        });
+        return notificationCount;
+    }
 
     private void settingNavigationView() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setItemIconTintList(null);
+
+        View hView = navigationView.getHeaderView(0);
+        TextView nav_user = (TextView) hView.findViewById(R.id.tv_profile_name);
+        nav_user.setText(SaveDataClass.getUserName(HomenavigationActivity.this));
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     private void setttingPagerHeaderForSearch() {
-        pagerHeaderSearch.setBackgroundColor(Color.BLACK);
+       /* pagerHeaderSearch.setBackgroundColor(Color.BLACK);
         pagerHeaderSearch.setDrawFullUnderline(false);
         pagerHeaderSearch.setTextSpacing(0);
         pagerHeaderSearch.setTabIndicatorColor(Color.RED);
@@ -107,7 +167,44 @@ public class HomenavigationActivity extends AppCompatActivity
         pagerHeaderSearch.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
         pagerHeaderSearch.setDrawFullUnderline(false);
         SearchPagerAdapter searchPagerAdapter = new SearchPagerAdapter(getSupportFragmentManager());
-        vpPagerSearch.setAdapter(searchPagerAdapter);
+        vpPagerSearch.setAdapter(searchPagerAdapter);*/
+
+        getSearchData();
+    }
+
+    private void getSearchData() {
+
+        ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
+
+        Call<FeatureMoviesResponse> call = italiaApi.getSearchData("7");
+
+        call.enqueue(new Callback<FeatureMoviesResponse>() {
+            @Override
+            public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {
+
+
+                FeatureMoviesResponse featureMoviesResponse = response.body();
+
+                if (featureMoviesResponse.getStatus() == 1) {
+
+                    infoArrayList.clear();
+                    for (int i = 0; i < featureMoviesResponse.getInfo().size(); i++) {
+                        infoArrayList.add(featureMoviesResponse.getInfo().get(i));
+                    }
+
+                    searchRecyclerview.setLayoutManager(new LinearLayoutManager(HomenavigationActivity.this));
+                    searchAdapter = new SearchAdapter(HomenavigationActivity.this, infoArrayList);
+                    searchRecyclerview.setAdapter(searchAdapter);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
+                Log.d("Fetaure1", t.getMessage());
+            }
+        });
+
     }
 
     private void settingPagerHeader() {
@@ -143,29 +240,39 @@ public class HomenavigationActivity extends AppCompatActivity
         });
     }
 
+    public void onbackpressOfFavouritesActivity() {
+        startActivity(new Intent(HomenavigationActivity.this,HomenavigationActivity.class));
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+
+
+            Log.d("onBackPressed", getSupportFragmentManager().getBackStackEntryCount() + "");
+
+
+          /*  Fragment fragmentInFrame = (Fragment)getSupportFragmentManager()
+                    .findFragmentById(R.id.frag2_view)
+                    .findFragmentById(R.id.frag2_view);*/
         }
     }
 
     /*  @Override
-      public void  CallbackFromTrendingToTrendingVideoDetails(){
-          if (getActivity() instanceof CallBackListener)
-              callBackListener = (CallBackListener) getActivity();
-      }*/
+       public void  backPressFavourite(){
+
+          startActivity(new Intent(this,HomenavigationActivity.class));
+       }*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.homenavigation, menu);
+
         settingBellIcon(menu);
-
         settingAppandSearchIcon(menu);
-
 
         return true;
     }
@@ -174,26 +281,23 @@ public class HomenavigationActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId(); // Retrieve the id of the selected menu item
 
-        switch(id) {
+        switch (id) {
             case R.id.action_bell: // "@+id/about" is the id of your menu item (menu layout)
                 startActivity(new Intent(this, NotificationActivity.class));
                 break;
             case R.id.action_applogo: // "@+id/about" is the id of your menu item (menu layout)
-
-            break;
+                startActivity(new Intent(this, HomenavigationActivity.class));
+                break;
         }
         return super.onOptionsItemSelected(item);
-        }
+    }
 
 
     private void settingAppandSearchIcon(Menu menu) {
         menuApp = menu.findItem(R.id.action_applogo);
         menuSearch = menu.findItem(R.id.action_search);
-
-
         SearchView searchView = (SearchView) menuSearch.getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -234,7 +338,7 @@ public class HomenavigationActivity extends AppCompatActivity
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                Log.d("count123", count + "");
+
                 homeContainer.setVisibility(View.VISIBLE);
                 searchContainer.setVisibility(View.GONE);
                 menuBell.setVisible(true);
@@ -243,17 +347,48 @@ public class HomenavigationActivity extends AppCompatActivity
                 return false;
             }
         });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+
+                Log.d("count123", s + "");
+                filter(s.toString());
+                return false;
+            }
+        });
+    }
+
+    void filter(String text) {
+        ArrayList<Info> temp = new ArrayList();
+        for (Info d : infoArrayList) {
+            //or use .equal(text) with you want equal match
+            //use .toLowerCase() for better matches
+            if (d.getMovieName().contains(text) || d.getStarCast().contains(text)) {
+                temp.add(d);
+            }
+        }
+        //update recyclerview
+        searchAdapter.updateList(temp);
     }
 
     private void settingBellIcon(Menu menu) {
-
+        Log.d("Activity123", "settingbell");
         menuBell = menu.findItem(
                 R.id.action_bell);
 
         menuBell.setActionView(R.layout.badge_layout);
+
         View view = menuBell.getActionView();
         NotificationBadge notificationBadge = view.findViewById(R.id.badge);
-        notificationBadge.setNumber(3);
+
+        getNotificationCount(notificationBadge);
+        Log.d("Singletonnotification" +
+                "", notificationCount + "" + SaveDataClass.getInstance().getNotificationcount() + "    ");
         notificationBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -285,14 +420,17 @@ public class HomenavigationActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
             String username = "";
             String password = "";
-            saveDataClass = new SaveDataClass(HomenavigationActivity.this);
-            saveDataClass.setStr("username", username);
-            saveDataClass.setStr("password", password);
-            startActivity(new Intent(HomenavigationActivity.this, HomenavigationActivity.class));
+            SaveDataClass.setUserName(HomenavigationActivity.this, "");
+            SaveDataClass.setUserPassword(HomenavigationActivity.this, "");
+            finish();
+
+            startActivity(new Intent(HomenavigationActivity.this, RegistrationActivity.class));
         } else if (id == R.id.nav_favourites) {
 
             FavouritesFragment favouritesFragment = new FavouritesFragment();
+
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.addToBackStack("FavouriteFragment");
             fragmentTransaction.replace(R.id.container, favouritesFragment);
             fragmentTransaction.commit();
         }

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.ajit.italiascinema.Activity.fragments.TrendingFragment;
 import com.example.ajit.italiascinema.Activity.fragments.TrendingVideoDetailsFragment;
+import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
 import com.example.ajit.italiascinema.Activity.model.Info;
 import com.example.ajit.italiascinema.R;
 
@@ -52,10 +54,9 @@ public class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHo
     // binds the data to the TextView in each row
     @Override
     public void onBindViewHolder(ViewHolder holder, int i) {
-        final ViewHolder vh = (ViewHolder) holder;
 
 
-        holder.rightTvDirector.setText(arrayList.get(i).getDirector());
+       holder.rightTvDirector.setText(arrayList.get(i).getDirector());
         holder.rightTvComedy.setText(arrayList.get(i).getGenre());
         holder.rightTvStarcost.setText(arrayList.get(i).getStarCast());
         holder.tvFilmname.setText(arrayList.get(i).getMovieName());
@@ -64,10 +65,10 @@ public class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHo
         holder.trendingCardview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, "onclick", Toast.LENGTH_SHORT).show();
 
 
-                trendingFragment.trendingVideoOnclick();
+
+                trendingFragment.trendingVideoOnclick(arrayList.get(i));
             }
         });
     }

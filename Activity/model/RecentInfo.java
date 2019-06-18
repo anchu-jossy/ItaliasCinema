@@ -1,27 +1,13 @@
 package com.example.ajit.italiascinema.Activity.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Info implements Parcelable {
+public class RecentInfo {
 
-    public String getReleaseStatus() {
-        return releaseStatus;
-    }
-
-    public void setReleaseStatus(String releaseStatus) {
-        this.releaseStatus = releaseStatus;
-    }
-
-    @SerializedName("release_status")
-    @Expose
-    private String releaseStatus;
     @SerializedName("movie_id")
     @Expose
     private String movieId;
@@ -42,7 +28,7 @@ public class Info implements Parcelable {
     private String details;
     @SerializedName("duration_no")
     @Expose
-    private String durationNo;
+    private int durationNo;
     @SerializedName("duration_time")
     @Expose
     private String durationTime;
@@ -63,7 +49,7 @@ public class Info implements Parcelable {
     private String rating;
     @SerializedName("adds")
     @Expose
-    private List<Add> adds = null;
+    private List<RecentAdd> adds = null;
 
     public String getMovieId() {
         return movieId;
@@ -113,11 +99,11 @@ public class Info implements Parcelable {
         this.details = details;
     }
 
-    public String getDurationNo() {
+    public int getDurationNo() {
         return durationNo;
     }
 
-    public void setDurationNo(String durationNo) {
+    public void setDurationNo(int durationNo) {
         this.durationNo = durationNo;
     }
 
@@ -169,70 +155,12 @@ public class Info implements Parcelable {
         this.rating = rating;
     }
 
-    public List<Add> getAdds() {
+    public List<RecentAdd> getAdds() {
         return adds;
     }
 
-    public void setAdds(List<Add> adds) {
+    public void setAdds(List<RecentAdd> adds) {
         this.adds = adds;
     }
 
-
-    public Info() {
-    }
-
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.releaseStatus);
-        dest.writeString(this.movieId);
-        dest.writeString(this.movieName);
-        dest.writeString(this.starCast);
-        dest.writeString(this.director);
-        dest.writeString(this.genre);
-        dest.writeString(this.details);
-        dest.writeString(this.durationNo);
-        dest.writeString(this.durationTime);
-        dest.writeString(this.thumbnails);
-        dest.writeString(this.subtitle);
-        dest.writeString(this.videoLink);
-        dest.writeString(this.date);
-        dest.writeString(this.rating);
-        dest.writeTypedList(this.adds);
-    }
-
-    protected Info(Parcel in) {
-        this.releaseStatus = in.readString();
-        this.movieId = in.readString();
-        this.movieName = in.readString();
-        this.starCast = in.readString();
-        this.director = in.readString();
-        this.genre = in.readString();
-        this.details = in.readString();
-        this.durationNo = in.readString();
-        this.durationTime = in.readString();
-        this.thumbnails = in.readString();
-        this.subtitle = in.readString();
-        this.videoLink = in.readString();
-        this.date = in.readString();
-        this.rating = in.readString();
-        this.adds = in.createTypedArrayList(Add.CREATOR);
-    }
-
-    public static final Parcelable.Creator<Info> CREATOR = new Parcelable.Creator<Info>() {
-        @Override
-        public Info createFromParcel(Parcel source) {
-            return new Info(source);
-        }
-
-        @Override
-        public Info[] newArray(int size) {
-            return new Info[size];
-        }
-    };
 }

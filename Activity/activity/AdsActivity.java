@@ -26,8 +26,9 @@ public class AdsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ads);
         ButterKnife.bind(this);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-        Log.d("tag123", "oncreate in adsactivity");
 
+        String addurl=getIntent().getStringExtra("ADDURL");
+        Log.d("tag123", addurl);
         mediaController = new MediaController(AdsActivity.this);
         mediaController.setAnchorView(videoview);
         Uri uri1 = Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4");
