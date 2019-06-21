@@ -1,13 +1,14 @@
-package com.example.ajit.italiascinema.Activity.Api;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.Api;
 
-import com.example.ajit.italiascinema.Activity.model.ChangePaswordResponse;
-import com.example.ajit.italiascinema.Activity.model.ClearHistoryResponse;
-import com.example.ajit.italiascinema.Activity.model.EditProfileResponse;
-import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
-import com.example.ajit.italiascinema.Activity.model.LoginResponse;
-import com.example.ajit.italiascinema.Activity.model.RegisterOtpResponse;
-import com.example.ajit.italiascinema.Activity.model.RegisterResponse;
-import com.example.ajit.italiascinema.Activity.model.SetWatchHistoryResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.ChangePaswordResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.ClearHistoryResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.EditProfileResponse;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.LoginResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.RegisterOtpResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.RegisterResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.SetWatchHistoryResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Field;

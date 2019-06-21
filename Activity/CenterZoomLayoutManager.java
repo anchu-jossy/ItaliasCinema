@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;

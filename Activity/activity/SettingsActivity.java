@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.activity;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -9,12 +9,12 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.example.ajit.italiascinema.Activity.fragments.ChangePasswordFragment;
-import com.example.ajit.italiascinema.Activity.fragments.ClearDialogFragment;
-import com.example.ajit.italiascinema.Activity.fragments.DownloadsQuality;
-import com.example.ajit.italiascinema.Activity.fragments.EditprofileFragment;
-import com.example.ajit.italiascinema.Activity.fragments.LanguagePreferenceFragment;
-import com.example.ajit.italiascinema.R;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.ChangePasswordFragment;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.ClearDialogFragment;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.DownloadsQuality;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.EditprofileFragment;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.LanguagePreferenceFragment;
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

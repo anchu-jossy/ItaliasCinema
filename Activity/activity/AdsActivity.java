@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.activity;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.activity;
 
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
-import com.example.ajit.italiascinema.R;
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

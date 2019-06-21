@@ -1,8 +1,7 @@
-package com.example.ajit.italiascinema.Activity;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.SeekBar;
 import android.widget.VideoView;
 
 public class CustomVideoView extends VideoView {

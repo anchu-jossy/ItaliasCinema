@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.activity;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -26,15 +26,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
-import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
-import com.example.ajit.italiascinema.Activity.fragments.ChangePasswordFragment;
-import com.example.ajit.italiascinema.Activity.fragments.CustomBottomSheetDialogFragment;
-import com.example.ajit.italiascinema.Activity.interfaces.CommonInterface;
-import com.example.ajit.italiascinema.Activity.model.Info;
-import com.example.ajit.italiascinema.Activity.model.LoginResponse;
-import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
-import com.example.ajit.italiascinema.R;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.HomenavigationActivity;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.MyApplication;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.LoginResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.ChangePasswordFragment;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.interfaces.CommonInterface;
+
+
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import org.solovyev.android.checkout.ActivityCheckout;
 import org.solovyev.android.checkout.Billing;
@@ -95,6 +99,7 @@ public class LoginActivity extends AppCompatActivity implements CommonInterface 
     String TAG = "PAYMENTACTIVITY";
     private ActivityCheckout mCheckout;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,9 +113,10 @@ public class LoginActivity extends AppCompatActivity implements CommonInterface 
             edtUsername.setText(username1);
             edtPassword.setText(password1);
 
-            final Billing billing = MyApplication.get(LoginActivity.this).getBilling();
+            final Billing billing = MyApplication.get(LoginActivity.this).getBilling();;
             mCheckout = Checkout.forActivity(this, billing);
             mCheckout.start();
+
             mCheckout.createPurchaseFlow(new PurchaseListener());
 
 
@@ -124,19 +130,7 @@ public class LoginActivity extends AppCompatActivity implements CommonInterface 
         tvSignUp.setPaintFlags(tvSignUp.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 
-    @Override
-    public void onClickContinueInLogin() {
-        startActivity(new Intent(LoginActivity.this, PaymentActivity.class));
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //do what ever you want here, and get the result from intent like below
-        String myData = data.getStringExtra("listdata");
-        Toast.makeText(LoginActivity.this, data.getStringExtra("listdata"), Toast.LENGTH_SHORT).show();
-    }
 
     private void doneButtonClick() {
 
@@ -156,18 +150,29 @@ public class LoginActivity extends AppCompatActivity implements CommonInterface 
 
                 if (loginResponse.getStatus() == 1) {
 
+                   /* if (SaveDataClass.getInstance().getSetIndexForDownloading().equals("Feature")) {
+                        info = getIntent().getExtras().getParcelable("FeatureData");
+                        Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
+                        Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
+                        downloadingVideo(info);*/
 
 
-                    mCheckout.whenReady(new Checkout.EmptyListener() {
+                    /*mCheckout.whenReady(new Checkout.EmptyListener() {
                         @Override
                         public void onReady(BillingRequests requests) {
                             requests.purchase(ProductTypes.IN_APP, "italias_123", null, mCheckout.getPurchaseFlow());
                         }
-                    });
+                    });*/
 
 
                 } else
-                    startActivity(new Intent(LoginActivity.this, HomenavigationActivity.class));
+                    mCheckout.whenReady(new Checkout.EmptyListener() {
+                        @Override
+                        public void onReady(BillingRequests requests) {
+                            requests.purchase(ProductTypes.IN_APP, "italias_123", SaveDataClass.getUserID(LoginActivity.this), mCheckout.getPurchaseFlow());
+                        }
+                    });
+                  //  startActivity(new Intent(LoginActivity.this, HomenavigationActivity.class));
 
 
             }
@@ -184,6 +189,14 @@ public class LoginActivity extends AppCompatActivity implements CommonInterface 
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCheckout.onActivityResult(requestCode, resultCode, data);
+        Toast.makeText(this, data.getExtras()+"", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "onActivityResult: "+data.getExtras().toString());
+
+    }
     private boolean downloadingVideo(Info info) {
         if (!username1.equals("") && !password1.equals("")) {
             Log.v("getvideolink1", info.getVideoLink());
@@ -426,12 +439,46 @@ public class LoginActivity extends AppCompatActivity implements CommonInterface 
         public void onSuccess(Purchase purchase) {
             // here you can process the loaded purchase
             Log.d(TAG, "purchase success");
+
+
+                   if (SaveDataClass.getInstance().getSetIndexForDownloading().equals("Feature")) {
+                       info = getIntent().getExtras().getParcelable("FeatureData");
+                       Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
+                       Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
+                       downloadingVideo(info);
+
+                   }
+
+                   else if(SaveDataClass.getInstance().getSetIndexForDownloading().equals("Trending")) {
+                       info = getIntent().getExtras().getParcelable("TrendingVideoData");
+                       Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
+                       Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
+                       downloadingVideo(info);
+                   }
+                   else if(SaveDataClass.getInstance().getSetIndexForDownloading().equals("Latest")) {
+                       info = getIntent().getExtras().getParcelable("LatestVideodata");
+                       Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
+                       Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
+                       downloadingVideo(info);
+                   }
+                   else if(SaveDataClass.getInstance().getSetIndexForDownloading().equals("Recent")) {
+                       info = getIntent().getExtras().getParcelable("RecentVideodata");
+                       Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
+                       Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
+                       downloadingVideo(info);
+                   }
+
+
+                   //
+            Toast.makeText(LoginActivity.this, purchase.orderId +purchase.data+"", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onSuccess: "+purchase.data);
         }
 
         @Override
         public void onError(int response, Exception e) {
             // handle errors here
             Log.d(TAG, "purchase exception:-" + e + "");
+            Toast.makeText(LoginActivity.this, "purchase exception:-" + e+"", Toast.LENGTH_SHORT).show();
         }
     }
 

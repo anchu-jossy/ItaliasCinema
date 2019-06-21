@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.fragments;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,16 +17,21 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
-import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
-import com.example.ajit.italiascinema.Activity.CenterZoomLayoutManager;
-import com.example.ajit.italiascinema.Activity.adapter.FeatureAdapterForVideo;
-import com.example.ajit.italiascinema.Activity.adapter.FeatureAdapterForWatchHistory;
-import com.example.ajit.italiascinema.Activity.interfaces.DotsIndicatorDecoration;
-import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
-import com.example.ajit.italiascinema.Activity.model.Info;
-import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
-import com.example.ajit.italiascinema.R;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.FeatureAdapterForVideo;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.FeatureAdapterForWatchHistory;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.CenterZoomLayoutManager;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.interfaces.DotsIndicatorDecoration;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.Pivot;
 import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
@@ -177,7 +182,7 @@ public class FeatureFragment extends Fragment {
 
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
 
-        Call<FeatureMoviesResponse> call = italiaApi.getFeatureMovies(SaveDataClass.getUserID(getContext()), "feature");
+        Call<FeatureMoviesResponse> call = italiaApi.getFeatureMovies("53", "feature");
 
         call.enqueue(new Callback<FeatureMoviesResponse>() {
             @Override
@@ -216,7 +221,7 @@ public class FeatureFragment extends Fragment {
         progressLoader.setVisibility(View.VISIBLE);
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
 
-        Call<FeatureMoviesResponse> call = italiaApi.getWatchHistory(SaveDataClass.getUserID(getContext()));
+        Call<FeatureMoviesResponse> call = italiaApi.getWatchHistory("53");
 
         call.enqueue(new Callback<FeatureMoviesResponse>() {
             @Override

@@ -1,6 +1,6 @@
-package com.example.ajit.italiascinema.Activity.interfaces;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.interfaces;
 
-import com.example.ajit.italiascinema.Activity.model.Info;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
 
 public interface CommonInterface {
     default void trendingVideoOnclick(Info info){

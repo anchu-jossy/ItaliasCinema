@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.Api;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.Api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

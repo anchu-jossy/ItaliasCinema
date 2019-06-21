@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.fragments;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.ajit.italiascinema.R;
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

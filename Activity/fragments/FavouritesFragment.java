@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.fragments;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,15 +11,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
-import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
-import com.example.ajit.italiascinema.Activity.activity.HomenavigationActivity;
-import com.example.ajit.italiascinema.Activity.adapter.FavouritesAdapter;
-import com.example.ajit.italiascinema.Activity.interfaces.CommonInterface;
-import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
-import com.example.ajit.italiascinema.Activity.model.Info;
-import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
-import com.example.ajit.italiascinema.R;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.HomenavigationActivity;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.FavouritesAdapter;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.interfaces.CommonInterface;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import java.util.ArrayList;
 

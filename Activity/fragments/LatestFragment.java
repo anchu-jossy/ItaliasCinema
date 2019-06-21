@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.fragments;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -17,14 +17,17 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
-import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
-import com.example.ajit.italiascinema.Activity.adapter.LatestAdapter;
-import com.example.ajit.italiascinema.Activity.adapter.LatestImageViewAdapter;
-import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
-import com.example.ajit.italiascinema.Activity.model.Info;
-import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
-import com.example.ajit.italiascinema.R;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.LatestAdapter;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.LatestImageViewAdapter;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

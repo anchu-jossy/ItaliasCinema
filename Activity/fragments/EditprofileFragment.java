@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.fragments;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,12 +14,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
-import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
-import com.example.ajit.italiascinema.Activity.model.ClearHistoryResponse;
-import com.example.ajit.italiascinema.Activity.model.EditProfileResponse;
-import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
-import com.example.ajit.italiascinema.R;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.EditProfileResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
+
+
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

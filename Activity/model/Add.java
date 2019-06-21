@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.model;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

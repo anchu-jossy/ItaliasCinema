@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.fragments;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,15 +14,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
-import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
-import com.example.ajit.italiascinema.Activity.activity.TendingDetailsActivity;
-import com.example.ajit.italiascinema.Activity.adapter.TrendingAdapter;
-import com.example.ajit.italiascinema.Activity.interfaces.CommonInterface;
-import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
-import com.example.ajit.italiascinema.Activity.model.Info;
-import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
-import com.example.ajit.italiascinema.R;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.TrendingAdapter;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.TendingDetailsActivity;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.interfaces.CommonInterface;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import java.util.ArrayList;
 

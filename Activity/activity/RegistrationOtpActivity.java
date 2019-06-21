@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.activity;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,10 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
-import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
-import com.example.ajit.italiascinema.Activity.model.RegisterOtpResponse;
-import com.example.ajit.italiascinema.R;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.LoginActivity;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.RegisterOtpResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 import com.goodiebag.pinview.Pinview;
 
 import butterknife.BindView;

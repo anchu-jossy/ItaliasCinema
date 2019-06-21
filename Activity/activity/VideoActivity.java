@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.activity;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.activity;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -11,14 +11,18 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
-import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
-import com.example.ajit.italiascinema.Activity.interfaces.CommonInterface;
-import com.example.ajit.italiascinema.Activity.model.Add;
-import com.example.ajit.italiascinema.Activity.model.Info;
-import com.example.ajit.italiascinema.Activity.model.SetWatchHistoryResponse;
-import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
-import com.example.ajit.italiascinema.R;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Add;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.AdsActivity;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.interfaces.CommonInterface;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.SetWatchHistoryResponse;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;

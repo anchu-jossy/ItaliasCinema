@@ -1,9 +1,9 @@
-package com.example.ajit.italiascinema.Activity.savedata;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.example.ajit.italiascinema.Activity.model.Info;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
 
 public class SaveDataClass {
     private static final String USER_NAME = "USER_NAME";

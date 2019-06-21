@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.activity;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.activity;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -16,13 +16,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.bumptech.glide.Glide;
-import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
-import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
-import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
-import com.example.ajit.italiascinema.Activity.model.Info;
-import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
-import com.example.ajit.italiascinema.R;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -170,7 +173,7 @@ public class TendingDetailsActivity extends AppCompatActivity {
                 isStoragePermissionGranted(info);
                 break;
             case R.id.btn_share:
-                String message = "Text I want to share.";
+                String message = info.getVideoLink();
                 Intent share = new Intent(Intent.ACTION_SEND);
                 share.setType("text/plain");
                 share.putExtra(Intent.EXTRA_TEXT, message);

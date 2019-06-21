@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.activity;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -20,11 +20,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
-import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
-import com.example.ajit.italiascinema.Activity.model.RegisterResponse;
-import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
-import com.example.ajit.italiascinema.R;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.RegisterResponse;
+
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,16 +73,34 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_registration);
         ButterKnife.bind(this);
         btnDone.setOnClickListener(this);
-        getDeviceImei();
+        //getDeviceImei();
         // getText();
+        checkPermission();
     }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void checkPermission() {
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
+            if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},
+                        PERMISSIONS_REQUEST_READ_PHONE_STATE);
+            }
+            else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    getDeviceImei();
+                }
+            }
+        }
 
+    }
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
+        if(grantResults[0]==PackageManager.PERMISSION_GRANTED){
+            getDeviceImei();
+        }
 
-        getDeviceImei();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -151,6 +171,11 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
 
         });
 
+
+    }
+
+    @Override
+    public void onBackPressed() {
 
     }
 

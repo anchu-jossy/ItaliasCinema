@@ -1,12 +1,12 @@
-package com.example.ajit.italiascinema.Activity.model;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Add;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Info implements Parcelable {
@@ -42,7 +42,7 @@ public class Info implements Parcelable {
     private String details;
     @SerializedName("duration_no")
     @Expose
-    private String durationNo;
+    private int durationNo;
     @SerializedName("duration_time")
     @Expose
     private String durationTime;
@@ -113,11 +113,11 @@ public class Info implements Parcelable {
         this.details = details;
     }
 
-    public String getDurationNo() {
+    public int getDurationNo() {
         return durationNo;
     }
 
-    public void setDurationNo(String durationNo) {
+    public void setDurationNo(int durationNo) {
         this.durationNo = durationNo;
     }
 
@@ -196,7 +196,7 @@ public class Info implements Parcelable {
         dest.writeString(this.director);
         dest.writeString(this.genre);
         dest.writeString(this.details);
-        dest.writeString(this.durationNo);
+        dest.writeInt(this.durationNo);
         dest.writeString(this.durationTime);
         dest.writeString(this.thumbnails);
         dest.writeString(this.subtitle);
@@ -214,7 +214,7 @@ public class Info implements Parcelable {
         this.director = in.readString();
         this.genre = in.readString();
         this.details = in.readString();
-        this.durationNo = in.readString();
+
         this.durationTime = in.readString();
         this.thumbnails = in.readString();
         this.subtitle = in.readString();

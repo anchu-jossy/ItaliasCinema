@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.Common;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.Common;
 
 public class Constants {
 

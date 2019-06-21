@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.adapter;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter;
 
 
 import android.content.Context;
@@ -12,8 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.ajit.italiascinema.Activity.model.Info;
-import com.example.ajit.italiascinema.R;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import java.util.ArrayList;
 

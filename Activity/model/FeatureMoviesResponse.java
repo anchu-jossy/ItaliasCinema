@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.model;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -24,7 +24,7 @@ public class FeatureMoviesResponse  {
     private int status;
     @SerializedName("info")
     @Expose
-    private List<Info> info = null;
+    private List<com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info> info = null;
 
     public int getStatus() {
         return status;
@@ -34,11 +34,11 @@ public class FeatureMoviesResponse  {
         this.status = status;
     }
 
-    public List<Info> getInfo() {
+    public List<com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info> getInfo() {
         return info;
     }
 
-    public void setInfo(List<Info> info) {
+    public void setInfo(List<com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info> info) {
         this.info = info;
     }
 }

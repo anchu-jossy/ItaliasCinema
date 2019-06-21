@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.activity;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerTabStrip;
@@ -25,17 +26,22 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
-import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
-import com.example.ajit.italiascinema.Activity.adapter.MyPagerAdapter;
-import com.example.ajit.italiascinema.Activity.adapter.SearchAdapter;
-import com.example.ajit.italiascinema.Activity.fragments.AboutUsFragment;
-import com.example.ajit.italiascinema.Activity.fragments.FavouritesFragment;
-import com.example.ajit.italiascinema.Activity.interfaces.CommonInterface;
-import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
-import com.example.ajit.italiascinema.Activity.model.Info;
-import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
-import com.example.ajit.italiascinema.R;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.MyPagerAdapter;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.SearchAdapter;
+
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.AboutUsFragment;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.FavouritesFragment;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.interfaces.CommonInterface;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 import com.nex3z.notificationbadge.NotificationBadge;
 
 import java.util.ArrayList;
@@ -252,13 +258,15 @@ public class HomenavigationActivity extends AppCompatActivity
         } else {
 
 
-            Log.d("onBackPressed", getSupportFragmentManager().getBackStackEntryCount() + "");
+            FragmentManager fragmentManager=getSupportFragmentManager();
+            fragmentManager.findFragmentById(R.id.container);
 
-
+            Log.d("onBackPressed",    fragmentManager.findFragmentById(R.id.container)+"");
           /*  Fragment fragmentInFrame = (Fragment)getSupportFragmentManager()
                     .findFragmentById(R.id.frag2_view)
                     .findFragmentById(R.id.frag2_view);*/
         }
+
     }
 
     /*  @Override

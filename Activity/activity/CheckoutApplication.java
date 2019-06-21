@@ -1,10 +1,10 @@
-package com.example.ajit.italiascinema.Activity.activity;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.activity;
 
 import android.app.Activity;
 import android.app.Application;
 import android.widget.Toast;
 
-import com.example.ajit.italiascinema.R;
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import org.solovyev.android.checkout.Billing;
 import org.solovyev.android.checkout.PlayStoreListener;

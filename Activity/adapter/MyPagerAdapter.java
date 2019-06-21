@@ -1,16 +1,14 @@
-package com.example.ajit.italiascinema.Activity.adapter;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 
-import com.example.ajit.italiascinema.Activity.fragments.FeatureFragment;
-import com.example.ajit.italiascinema.Activity.fragments.LatestFragment;
-import com.example.ajit.italiascinema.Activity.fragments.RecentFragment;
-import com.example.ajit.italiascinema.Activity.fragments.TrendingFragment;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.FeatureFragment;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.LatestFragment;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.RecentFragment;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.TrendingFragment;
 
 public class MyPagerAdapter extends FragmentPagerAdapter  {
     private static int NUM_ITEMS = 4;

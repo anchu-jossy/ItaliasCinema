@@ -1,27 +1,19 @@
-package com.example.ajit.italiascinema.Activity.adapter;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.TrendingFragment;
 import com.bumptech.glide.Glide;
-import com.example.ajit.italiascinema.Activity.fragments.TrendingFragment;
-import com.example.ajit.italiascinema.Activity.fragments.TrendingVideoDetailsFragment;
-import com.example.ajit.italiascinema.Activity.model.FeatureMoviesResponse;
-import com.example.ajit.italiascinema.Activity.model.Info;
-import com.example.ajit.italiascinema.R;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import java.util.ArrayList;
 

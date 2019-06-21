@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.activity;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -16,11 +16,15 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.ajit.italiascinema.Activity.Api.ItaliaApi;
-import com.example.ajit.italiascinema.Activity.Api.RetrofitClientInstance;
-import com.example.ajit.italiascinema.Activity.model.RegisterResponse;
-import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
-import com.example.ajit.italiascinema.R;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.HomenavigationActivity;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.RegistrationActivity;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.RegisterResponse;
+
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 import com.scottyab.aescrypt.AESCrypt;
 
 import java.security.GeneralSecurityException;
@@ -183,10 +187,12 @@ public class SplashActivity extends AppCompatActivity {
                     Log.d(TAG, "onResponse: " + registerResponse.getPassword() + "" + registerResponse.getUsername());
                     SaveDataClass.setUserName(SplashActivity.this, registerResponse.getUsername());
                     SaveDataClass.setUserPassword(SplashActivity.this, registerResponse.getPassword());
+                    SaveDataClass.setUserID(SplashActivity.this,registerResponse.getUserid());
                     Intent intent = new Intent(SplashActivity.this, HomenavigationActivity.class);
                     startActivity(intent);
 
                 } else if (registerResponse.getStatus() == 0) {
+                    Log.d(TAG, "onFailure: " + registerResponse.getStatus());
                     Intent intent = new Intent(SplashActivity.this, RegistrationActivity.class);
                     startActivity(intent);
                 }

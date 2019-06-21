@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.network;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.network;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,7 +10,6 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
 
-import java.io.File;
 import java.security.cert.CertificateException;
 import java.util.Collections;
 import java.util.HashMap;

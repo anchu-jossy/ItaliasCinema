@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.adapter;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -18,12 +18,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.VideoActivity;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.bumptech.glide.Glide;
-import com.example.ajit.italiascinema.Activity.activity.LoginActivity;
-import com.example.ajit.italiascinema.Activity.activity.VideoActivity;
-import com.example.ajit.italiascinema.Activity.model.Info;
-import com.example.ajit.italiascinema.Activity.savedata.SaveDataClass;
-import com.example.ajit.italiascinema.R;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.LoginActivity;
+
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+
+import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import java.io.File;
 import java.io.FileOutputStream;

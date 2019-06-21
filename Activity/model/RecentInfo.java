@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.model;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.model;
 
 
 import com.google.gson.annotations.Expose;

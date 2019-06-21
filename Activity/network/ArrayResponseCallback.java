@@ -1,4 +1,4 @@
-package com.example.ajit.italiascinema.Activity.network;
+package com.ItaliasCinemas.ajit.Italiascinema.Activity.network;
 
 import com.google.gson.JsonArray;
 
