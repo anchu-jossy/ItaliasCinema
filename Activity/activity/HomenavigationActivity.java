@@ -26,20 +26,15 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.MyPagerAdapter;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.SearchAdapter;
-
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.AboutUsFragment;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.FavouritesFragment;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.interfaces.CommonInterface;
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.ItaliasCinemas.ajit.Italiascinema.R;
 import com.nex3z.notificationbadge.NotificationBadge;
@@ -182,7 +177,7 @@ public class HomenavigationActivity extends AppCompatActivity
 
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
 
-        Call<FeatureMoviesResponse> call = italiaApi.getSearchData("7");
+        Call<FeatureMoviesResponse> call = italiaApi.getSearchData("53");
 
         call.enqueue(new Callback<FeatureMoviesResponse>() {
             @Override
@@ -247,7 +242,7 @@ public class HomenavigationActivity extends AppCompatActivity
     }
 
     public void onbackpressOfFavouritesActivity() {
-        startActivity(new Intent(HomenavigationActivity.this,HomenavigationActivity.class));
+        startActivity(new Intent(HomenavigationActivity.this, HomenavigationActivity.class));
     }
 
     @Override
@@ -258,10 +253,10 @@ public class HomenavigationActivity extends AppCompatActivity
         } else {
 
 
-            FragmentManager fragmentManager=getSupportFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.findFragmentById(R.id.container);
 
-            Log.d("onBackPressed",    fragmentManager.findFragmentById(R.id.container)+"");
+            Log.d("onBackPressed", fragmentManager.findFragmentById(R.id.container) + "");
           /*  Fragment fragmentInFrame = (Fragment)getSupportFragmentManager()
                     .findFragmentById(R.id.frag2_view)
                     .findFragmentById(R.id.frag2_view);*/
@@ -373,15 +368,22 @@ public class HomenavigationActivity extends AppCompatActivity
 
     void filter(String text) {
         ArrayList<Info> temp = new ArrayList();
-        for (Info d : infoArrayList) {
-            //or use .equal(text) with you want equal match
-            //use .toLowerCase() for better matches
-            if (d.getMovieName().contains(text) || d.getStarCast().contains(text)) {
-                temp.add(d);
+        if(infoArrayList!=null) {
+
+
+            for (Info d : infoArrayList) {
+                //or use .equal(text) with you want equal match
+                //use .toLowerCase() for better matches
+
+                if (d.getMovieName().contains(text) || d.getStarCast().contains(text)) {
+                    temp.add(d);
+                }
             }
+            //update recyclerview
+
+                searchAdapter.updateList(temp);
+
         }
-        //update recyclerview
-        searchAdapter.updateList(temp);
     }
 
     private void settingBellIcon(Menu menu) {

@@ -182,7 +182,7 @@ public class FeatureFragment extends Fragment {
 
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
 
-        Call<FeatureMoviesResponse> call = italiaApi.getFeatureMovies("53", "feature");
+        Call<FeatureMoviesResponse> call = italiaApi.getFeatureMovies(SaveDataClass.getUserID(getContext()), "feature");
 
         call.enqueue(new Callback<FeatureMoviesResponse>() {
             @Override
@@ -221,18 +221,18 @@ public class FeatureFragment extends Fragment {
         progressLoader.setVisibility(View.VISIBLE);
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
 
-        Call<FeatureMoviesResponse> call = italiaApi.getWatchHistory("53");
+        Call<FeatureMoviesResponse> call = italiaApi.getWatchHistory(SaveDataClass.getUserID(getContext()));
 
         call.enqueue(new Callback<FeatureMoviesResponse>() {
             @Override
             public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {
-                if(progressLoader!=null)
-                progressLoader.setVisibility(View.GONE);
+
 
                 FeatureMoviesResponse featureMoviesResponse = response.body();
 
                 if (featureMoviesResponse.getStatus() == 1) {
-
+                    if(progressLoader!=null)
+                        progressLoader.setVisibility(View.GONE);
                     infoHistoryArrayList.clear();
                     for (int i = 0; i < featureMoviesResponse.getInfo().size(); i++) {
                         infoHistoryArrayList.add(featureMoviesResponse.getInfo().get(i));
@@ -275,7 +275,8 @@ public class FeatureFragment extends Fragment {
                 FeatureMoviesResponse featureMoviesResponse = response.body();
 
                 if (featureMoviesResponse.getStatus() == 1) {
-
+                    if(progressLoader!=null)
+                        progressLoader.setVisibility(View.GONE);
                     allInfoArrayList.clear();
                     for (int i = 0; i < featureMoviesResponse.getInfo().size(); i++) {
                         allInfoArrayList.add(featureMoviesResponse.getInfo().get(i));
@@ -290,6 +291,8 @@ public class FeatureFragment extends Fragment {
             @Override
             public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
                 Log.d("Fetaure1", t.getMessage());
+                if(progressLoader!=null)
+                    progressLoader.setVisibility(View.GONE);
             }
         });
         return infoArrayList;

@@ -17,16 +17,13 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.LatestAdapter;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.LatestImageViewAdapter;
-
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
-
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import java.util.ArrayList;
@@ -54,11 +51,6 @@ public class LatestFragment extends Fragment {
     @BindView(R.id.progress_loader)
     ProgressBar progressLoader;
 
-    public static Fragment newInstance(String s, String s1) {
-        LatestFragment fragment = new LatestFragment();
-
-        return fragment;
-    }
 
     public static Bitmap retriveVideoFrameFromVideo(String videoPath) throws Throwable {
         Bitmap bitmap = null;
@@ -124,11 +116,12 @@ public class LatestFragment extends Fragment {
         call.enqueue(new Callback<FeatureMoviesResponse>() {
             @Override
             public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {
-                if (progressLoader != null)
-                    progressLoader.setVisibility(View.GONE);
+
                 infoArrayList = new ArrayList<>();
                 FeatureMoviesResponse featureMoviesResponse = response.body();
                 if (featureMoviesResponse.getStatus() == 1) {
+                    if (progressLoader != null)
+                        progressLoader.setVisibility(View.GONE);
                     infoArrayList.clear();
 
 
@@ -143,20 +136,7 @@ public class LatestFragment extends Fragment {
                     setAdapter(infoArrayList);
 
                 }
-/*
 
-
-
-                try {
-                    new DownloadImage("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4").execute();
-
-
-                    Log.d("Bitmap2", infoArrayList.get(0).getVideoLink() + "");
-                } catch (Throwable throwable) {
-
-                    Log.d("Throwable", throwable.getMessage());
-                    throwable.printStackTrace();
-                }*/
             }
 
             @Override

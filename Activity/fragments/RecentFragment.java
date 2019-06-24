@@ -9,13 +9,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.RecentAdapter;
-
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
 import com.ItaliasCinemas.ajit.Italiascinema.R;
 
@@ -36,6 +35,8 @@ public class RecentFragment extends Fragment {
     RecyclerView recentRecyclerview;
     Unbinder unbinder;
     ArrayList<Info> infoArrayList;
+    @BindView(R.id.progress_loader)
+    ProgressBar progressLoader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,7 +76,9 @@ public class RecentFragment extends Fragment {
                 if (response.body().getStatus() == 1) {
                     if (infoArrayList != null) {
                         infoArrayList.clear();
-
+                      if(progressLoader!=null)  {
+                          progressLoader.setVisibility(View.GONE);
+                      }
 
                         for (int i = 0; i < response.body().getInfo().size(); i++) {
 
@@ -98,6 +101,10 @@ public class RecentFragment extends Fragment {
             @Override
             public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
                 Log.d("Fetaure1", t.getMessage());
+                if(progressLoader!=null)  {
+                    progressLoader.setVisibility(View.VISIBLE);
+                }
+
             }
         });
 

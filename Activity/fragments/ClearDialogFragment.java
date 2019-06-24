@@ -9,11 +9,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.ClearHistoryResponse;
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.ItaliasCinemas.ajit.Italiascinema.R;
 
@@ -41,7 +39,6 @@ public class ClearDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.clear_dialog, container, false);
         ButterKnife.bind(this, v);
-        // Do all the stuff to initialize your custom view
 
         return v;
     }
@@ -62,7 +59,7 @@ public class ClearDialogFragment extends DialogFragment {
             public void onResponse(Call<ClearHistoryResponse> call, Response<ClearHistoryResponse> response) {
                 ClearHistoryResponse clearHistoryResponse = response.body();
                 if (clearHistoryResponse.getStatus() == 1) {
-                    Toast.makeText(getActivity(),clearHistoryResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), clearHistoryResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
