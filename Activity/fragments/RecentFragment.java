@@ -16,6 +16,7 @@ import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.RecentAdapter;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class RecentFragment extends Fragment {
 
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
 
-        Call<FeatureMoviesResponse> call = italiaApi.getRecentData("44", "recent");
+        Call<FeatureMoviesResponse> call = italiaApi.getRecentData(SaveDataClass.getUserID(getContext()), "recent");
         call.enqueue(new Callback<FeatureMoviesResponse>() {
             @Override
             public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {

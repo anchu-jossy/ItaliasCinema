@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.TrendingFragment;
@@ -52,6 +53,7 @@ public class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHo
         holder.rightTvComedy.setText(arrayList.get(i).getGenre());
         holder.rightTvStarcost.setText(arrayList.get(i).getStarCast());
         holder.tvFilmname.setText(arrayList.get(i).getMovieName());
+        holder.ratingBar.setNumStars(Integer.valueOf(arrayList.get(i).getRating()));
         Glide.with(context).load(arrayList.get(i).getThumbnails()).into(holder.imageview);
 
         holder.trendingCardview.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +62,7 @@ public class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHo
 
 
 
-                trendingFragment.trendingVideoOnclick(arrayList.get(i));
+               trendingFragment.trendingVideoOnclick(arrayList.get(i));
             }
         });
     }
@@ -74,7 +76,8 @@ public class TrendingAdapter extends RecyclerView.Adapter<TrendingAdapter.ViewHo
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
+        @BindView(R.id.rating_bar)
+        RatingBar ratingBar;
         @BindView(R.id.imageview)
         ImageView imageview;
         @BindView(R.id.trending_cardview)

@@ -2,6 +2,7 @@ package com.ItaliasCinemas.ajit.Italiascinema.Activity.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,14 +17,10 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.HomenavigationActivity;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.RegistrationActivity;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.RegisterResponse;
-
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.ItaliasCinemas.ajit.Italiascinema.R;
 import com.scottyab.aescrypt.AESCrypt;
 
@@ -44,7 +41,7 @@ import retrofit2.Response;
 public class SplashActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_READ_PHONE_STATE = 999;
     static String KEY_ALIAS_NAME = "Key";
-    String TAG = "ItaliasCinema";
+    String TAG = "ItaliasCinema000";
     String myAndroidDeviceId;
     SecretKey keyAesKeystore;
     String encryptedMsg;
@@ -60,34 +57,52 @@ public class SplashActivity extends AppCompatActivity {
 
        /* StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());*/
+        if (SaveDataClass.getUserName(SplashActivity.this) != null && SaveDataClass.getUserPassword(SplashActivity.this) != null) {
+
+         /*   new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (SaveDataClass.getUserName(SplashActivity.this) != null && SaveDataClass.getUserPassword(SplashActivity.this) != null) {
-                    startActivity(new Intent(SplashActivity.this, HomenavigationActivity.class));
-                } else {
-                    checkPermission();
+                    *//*  Already registered*//*
+
+                    //   prefs= getSharedPreferences("ItaliasCinema", MODE_PRIVATE);
+
+
+                    finish();
                 }
-                //   prefs= getSharedPreferences("ItaliasCinema", MODE_PRIVATE);
+            }, 2500);*/
+
+           startActivity(new Intent(SplashActivity.this, HomenavigationActivity.class));
+        } else {
+            checkPermission();
+        }
 
 
-                finish();
-            }
-        }, 2500);
     }
 
+    @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void checkPermission() {
-        if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},
-                    PERMISSIONS_REQUEST_READ_PHONE_STATE);
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                getDeviceImei();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Log.d(TAG, "checkPermission: sdk>m");
+
+            if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "checkPermission: requesting permission");
+                requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},
+                        PERMISSIONS_REQUEST_READ_PHONE_STATE);
+
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Log.d(TAG, "checkPermission: sdk>0");
+                    getDeviceImei();
+                }
             }
+        } else {
+            Log.d(TAG, "checkPermission: sdk<m");
+            getDeviceImei();
+            //  startActivity(new Intent(SplashActivity.this,LoginActivity.class)) ;
         }
     }
 
@@ -187,7 +202,7 @@ public class SplashActivity extends AppCompatActivity {
                     Log.d(TAG, "onResponse: " + registerResponse.getPassword() + "" + registerResponse.getUsername());
                     SaveDataClass.setUserName(SplashActivity.this, registerResponse.getUsername());
                     SaveDataClass.setUserPassword(SplashActivity.this, registerResponse.getPassword());
-                    SaveDataClass.setUserID(SplashActivity.this,registerResponse.getUserid());
+                    SaveDataClass.setUserID(SplashActivity.this, registerResponse.getUserid());
                     Intent intent = new Intent(SplashActivity.this, HomenavigationActivity.class);
                     startActivity(intent);
 

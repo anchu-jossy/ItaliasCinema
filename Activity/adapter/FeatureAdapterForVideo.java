@@ -14,17 +14,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.LoginActivity;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.VideoActivity;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Add;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
-import com.bumptech.glide.Glide;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.LoginActivity;
-
-
-
 import com.ItaliasCinemas.ajit.Italiascinema.R;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +34,7 @@ public class FeatureAdapterForVideo extends RecyclerView.Adapter<FeatureAdapterF
 
     ProgressDialog mProgressDialog;
     SaveDataClass saveDataClass;
+    HashMap<String, ArrayList<Add>> map = new HashMap<>();
 
     public FeatureAdapterForVideo(Context context, ArrayList<Info> infoarraylist) {
         this.infoarraylist = infoarraylist;
@@ -57,11 +57,13 @@ public class FeatureAdapterForVideo extends RecyclerView.Adapter<FeatureAdapterF
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, VideoActivity.class);
-                new Intent(context, VideoActivity.class);
+               // map.put(infoarraylist.get(i).getVideoLink(), (ArrayList<Add>) infoarraylist.get(0).getAdds());
                 intent.putExtra("featurevideoarray", infoarraylist.get(i));
-                Log.d("positionof", i + "");
-                context.startActivity(intent);
+                //Log.d("positionof", map.size() + "  " + map.keySet());
                 SaveDataClass.getInstance().setSetIndexFrom("feature");
+                context.startActivity(intent);
+
+
               /*  viewHolder.imageViewThumpnail.setVisibility(View.GONE);
                 viewHolder.videoview.setVisibility(View.VISIBLE);
                 setVideo(viewHolder);*/

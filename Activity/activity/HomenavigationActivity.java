@@ -368,7 +368,7 @@ public class HomenavigationActivity extends AppCompatActivity
 
     void filter(String text) {
         ArrayList<Info> temp = new ArrayList();
-        if(infoArrayList!=null) {
+        if (infoArrayList != null) {
 
 
             for (Info d : infoArrayList) {
@@ -381,7 +381,7 @@ public class HomenavigationActivity extends AppCompatActivity
             }
             //update recyclerview
 
-                searchAdapter.updateList(temp);
+            searchAdapter.updateList(temp);
 
         }
     }
@@ -433,7 +433,7 @@ public class HomenavigationActivity extends AppCompatActivity
             SaveDataClass.setUserName(HomenavigationActivity.this, "");
             SaveDataClass.setUserPassword(HomenavigationActivity.this, "");
             finish();
-
+            SaveDataClass.getInstance().setIslogout("HomeActivity");
             startActivity(new Intent(HomenavigationActivity.this, RegistrationActivity.class));
         } else if (id == R.id.nav_favourites) {
 

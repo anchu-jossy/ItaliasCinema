@@ -14,18 +14,15 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
+
 
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
-import com.bumptech.glide.Glide;
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
-
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
-
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.ItaliasCinemas.ajit.Italiascinema.R;
+import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,8 +36,7 @@ public class TendingDetailsActivity extends AppCompatActivity {
 
     Info info;
     int count;
-    @BindView(R.id.videoview)
-    VideoView videoview;
+
     @BindView(R.id.imageView_thumpnail)
     ImageView imageViewThumpnail;
     @BindView(R.id.btn_downloads)
@@ -100,12 +96,14 @@ public class TendingDetailsActivity extends AppCompatActivity {
     @BindView(R.id.tv_details_data)
     TextView tvDetailsData;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tending_detailsfragment);
         ButterKnife.bind(this);
         info = getIntent().getExtras().getParcelable("trendingdata");
+        Log.d("tendingdetails", "onCreate: " + info.getThumbnails());
         setData(info);
     }
 
@@ -114,11 +112,13 @@ public class TendingDetailsActivity extends AppCompatActivity {
         rightTvStarcost.setText(info.getStarCast());
         rightTvDirector.setText(info.getDirector());
         rightTvComedy.setText(info.getGenre());
-        rightTvReleasedDate.setText(info.getDate());
+        rightTvReleasedDate.setText(info.getDate() + "");
         tvDetailsData.setText(info.getDetails());
-        tvTimeDuration.setText("TimeDuration is   " + info.getDurationTime());
-        ratingBar.setNumStars(Integer.parseInt(info.getRating()));
-        Glide.with(this).load(info.getThumbnails()).into(imageViewThumpnail);
+
+        tvTimeDuration.setText(info.getDurationTime());
+        ratingBar.setNumStars(Integer.valueOf(info.getRating()));
+
+        Glide.with(TendingDetailsActivity.this).load("http://redex.info/italian_movie/thumbnails/download.jpeg").into(imageViewThumpnail);
     }
 
     public boolean isStoragePermissionGranted(Info info) {

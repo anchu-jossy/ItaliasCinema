@@ -7,7 +7,17 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Add implements Parcelable {
+    public static final Parcelable.Creator<Add> CREATOR = new Parcelable.Creator<Add>() {
+        @Override
+        public Add createFromParcel(Parcel source) {
+            return new Add(source);
+        }
 
+        @Override
+        public Add[] newArray(int size) {
+            return new Add[size];
+        }
+    };
     @SerializedName("advertisement_id")
     @Expose
     private String advertisementId;
@@ -17,6 +27,15 @@ public class Add implements Parcelable {
     @SerializedName("video_url")
     @Expose
     private String videoUrl;
+
+
+
+
+    protected Add(Parcel in) {
+        this.advertisementId = in.readString();
+        this.startTime = in.readString();
+        this.videoUrl = in.readString();
+    }
 
     public String getAdvertisementId() {
         return advertisementId;
@@ -42,7 +61,6 @@ public class Add implements Parcelable {
         this.videoUrl = videoUrl;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -54,25 +72,4 @@ public class Add implements Parcelable {
         dest.writeString(this.startTime);
         dest.writeString(this.videoUrl);
     }
-
-    public Add() {
-    }
-
-    protected Add(Parcel in) {
-        this.advertisementId = in.readString();
-        this.startTime = in.readString();
-        this.videoUrl = in.readString();
-    }
-
-    public static final Parcelable.Creator<Add> CREATOR = new Parcelable.Creator<Add>() {
-        @Override
-        public Add createFromParcel(Parcel source) {
-            return new Add(source);
-        }
-
-        @Override
-        public Add[] newArray(int size) {
-            return new Add[size];
-        }
-    };
 }

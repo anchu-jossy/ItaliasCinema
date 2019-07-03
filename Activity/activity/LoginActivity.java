@@ -26,27 +26,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.HomenavigationActivity;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.MyApplication;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.LoginResponse;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.fragments.ChangePasswordFragment;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.interfaces.CommonInterface;
-
-
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.LoginResponse;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import org.solovyev.android.checkout.ActivityCheckout;
 import org.solovyev.android.checkout.Billing;
-import org.solovyev.android.checkout.BillingRequests;
 import org.solovyev.android.checkout.Checkout;
 import org.solovyev.android.checkout.EmptyRequestListener;
 import org.solovyev.android.checkout.Inventory;
-import org.solovyev.android.checkout.ProductTypes;
 import org.solovyev.android.checkout.Purchase;
 
 import java.io.File;
@@ -106,14 +99,16 @@ public class LoginActivity extends AppCompatActivity implements CommonInterface 
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         setUnderLine();
-
+        edtUsername.setText("ttt");
+        edtPassword.setText("123");
         if (!SaveDataClass.getUserPassword(LoginActivity.this).equals(null) && (!SaveDataClass.getUserPassword(LoginActivity.this).equals(null))) {
             username1 = SaveDataClass.getUserName(LoginActivity.this);
             password1 = SaveDataClass.getUserPassword(LoginActivity.this);
             edtUsername.setText(username1);
             edtPassword.setText(password1);
 
-            final Billing billing = MyApplication.get(LoginActivity.this).getBilling();;
+            final Billing billing = MyApplication.get(LoginActivity.this).getBilling();
+            ;
             mCheckout = Checkout.forActivity(this, billing);
             mCheckout.start();
 
@@ -131,7 +126,6 @@ public class LoginActivity extends AppCompatActivity implements CommonInterface 
     }
 
 
-
     private void doneButtonClick() {
 
         username = SaveDataClass.getUserName(LoginActivity.this);
@@ -140,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements CommonInterface 
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
 
 
-        Call<LoginResponse> call = italiaApi.login(username, password);
+        Call<LoginResponse> call = italiaApi.login("ttt", "123");
         call.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
@@ -150,12 +144,29 @@ public class LoginActivity extends AppCompatActivity implements CommonInterface 
 
                 if (loginResponse.getStatus() == 1) {
 
-                   /* if (SaveDataClass.getInstance().getSetIndexForDownloading().equals("Feature")) {
+
+                    if (SaveDataClass.getInstance().getSetIndexForDownloading().equals("Feature")) {
                         info = getIntent().getExtras().getParcelable("FeatureData");
                         Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
                         Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
-                        downloadingVideo(info);*/
-
+                        downloadingVideo(info);
+                    }
+                   else if (SaveDataClass.getInstance().getSetIndexForDownloading().equals("Trending")) {
+                            info = getIntent().getExtras().getParcelable("TrendingVideoData");
+                            Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
+                            Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
+                            downloadingVideo(info);
+                        } else if (SaveDataClass.getInstance().getSetIndexForDownloading().equals("Latest")) {
+                            info = getIntent().getExtras().getParcelable("LatestVideodata");
+                            Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
+                            Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
+                            downloadingVideo(info);
+                        } else if (SaveDataClass.getInstance().getSetIndexForDownloading().equals("Recent")) {
+                            info = getIntent().getExtras().getParcelable("RecentVideodata");
+                            Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
+                            Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
+                            downloadingVideo(info);
+                        }
 
                     /*mCheckout.whenReady(new Checkout.EmptyListener() {
                         @Override
@@ -163,19 +174,19 @@ public class LoginActivity extends AppCompatActivity implements CommonInterface 
                             requests.purchase(ProductTypes.IN_APP, "italias_123", null, mCheckout.getPurchaseFlow());
                         }
                     });*/
+                    }
 
-
-                } else
+                } /*else
                     mCheckout.whenReady(new Checkout.EmptyListener() {
                         @Override
                         public void onReady(BillingRequests requests) {
                             requests.purchase(ProductTypes.IN_APP, "italias_123", SaveDataClass.getUserID(LoginActivity.this), mCheckout.getPurchaseFlow());
                         }
-                    });
-                  //  startActivity(new Intent(LoginActivity.this, HomenavigationActivity.class));
+                    });*/
+                //  startActivity(new Intent(LoginActivity.this, HomenavigationActivity.class));
 
 
-            }
+
 
 
             @Override
@@ -193,71 +204,90 @@ public class LoginActivity extends AppCompatActivity implements CommonInterface 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCheckout.onActivityResult(requestCode, resultCode, data);
-        Toast.makeText(this, data.getExtras()+"", Toast.LENGTH_SHORT).show();
-        Log.d(TAG, "onActivityResult: "+data.getExtras().toString());
+        Toast.makeText(this, data.getExtras() + "", Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "onActivityResult: " + data.getExtras().toString());
 
     }
+
     private boolean downloadingVideo(Info info) {
-        if (!username1.equals("") && !password1.equals("")) {
-            Log.v("getvideolink1", info.getVideoLink());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (LoginActivity.this.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        == PackageManager.PERMISSION_GRANTED) {
-                    Log.v("permission", "Permission is granted");
-                    // instantiate it within the onCreate method
-                    mProgressDialog = new ProgressDialog(LoginActivity.this);
-                    mProgressDialog.setMessage("Downloading Movie File");
-                    mProgressDialog.setIndeterminate(true);
-                    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                    mProgressDialog.setCancelable(true);
 
-// execute this when the downloader must be fired
-                    Log.v("getvideolink12", info.getVideoLink());
-                    final DownloadTask downloadTask = new DownloadTask(LoginActivity.this);
-                    downloadTask.execute(info.getVideoLink());
+        Log.d("getvideolink1", info.getVideoLink());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (LoginActivity.this.checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v("permission", "Permission is granted");
+                // instantiate it within the onCreate method
+                mProgressDialog = new ProgressDialog(LoginActivity.this);
+                mProgressDialog.setMessage("Downloading Movie File");
+                mProgressDialog.setIndeterminate(true);
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                mProgressDialog.setCancelable(true);
+
+                Log.v("getvideolink12", info.getVideoLink());
+                final DownloadTask downloadTask = new DownloadTask(LoginActivity.this);
+                downloadTask.execute(info.getVideoLink());
 
 
-                    //   downloadTask.execute("http://www.storiesinflight.com/js_videosub/jellies.mp4");
-                    mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                //   downloadTask.execute("http://www.storiesinflight.com/js_videosub/jellies.mp4");
+                mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
 
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            downloadTask.cancel(true); //cancel the task
-                        }
-                    });
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        downloadTask.cancel(true); //cancel the task
+                    }
+                });
 
-                    return true;
-                } else {
-
-                    Log.v("permission", "Permission is revoked");
-                    ActivityCompat.requestPermissions((Activity) LoginActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-
-                    mProgressDialog = new ProgressDialog(LoginActivity.this);
-                    mProgressDialog.setMessage("Downloading Movie File");
-                    mProgressDialog.setIndeterminate(true);
-                    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                    mProgressDialog.setCancelable(true);
-
-// execute this when the downloader must be fired
-                    final DownloadTask downloadTask = new DownloadTask(LoginActivity.this);
-                    downloadTask.execute(info.getVideoLink());
-
-                    mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            downloadTask.cancel(true); //cancel the task
-                        }
-                    });
-                    return false;
-                }
-            } else { //permission is automatically granted on sdk<23 upon installation
-                Log.v("permission", "Permission is  automatically granted on sdk<23 upon installation");
                 return true;
-            }
+            } else {
 
+                Log.v("permission", "Permission is revoked");
+                ActivityCompat.requestPermissions((Activity) LoginActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+
+                mProgressDialog = new ProgressDialog(LoginActivity.this);
+                mProgressDialog.setMessage("Downloading Movie File");
+                mProgressDialog.setIndeterminate(true);
+                mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                mProgressDialog.setCancelable(true);
+
+// execute this when the downloader must be fired
+                final DownloadTask downloadTask = new DownloadTask(LoginActivity.this);
+                downloadTask.execute(info.getVideoLink());
+
+                mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        downloadTask.cancel(true); //cancel the task
+                    }
+                });
+                return false;
+            }
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v("permission", "Permission is  automatically granted on sdk<23 upon installation");
+
+            mProgressDialog = new ProgressDialog(LoginActivity.this);
+            mProgressDialog.setMessage("Downloading Movie File");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            mProgressDialog.setCancelable(true);
+
+            Log.v("getvideolink12", info.getVideoLink());
+            final DownloadTask downloadTask = new DownloadTask(LoginActivity.this);
+            downloadTask.execute(info.getVideoLink());
+
+
+            //   downloadTask.execute("http://www.storiesinflight.com/js_videosub/jellies.mp4");
+            mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    downloadTask.cancel(true); //cancel the task
+                }
+            });
+            return true;
         }
-        return true;
+
+
     }
 
     private void forgotPasswordClick() {
@@ -441,44 +471,40 @@ public class LoginActivity extends AppCompatActivity implements CommonInterface 
             Log.d(TAG, "purchase success");
 
 
-                   if (SaveDataClass.getInstance().getSetIndexForDownloading().equals("Feature")) {
-                       info = getIntent().getExtras().getParcelable("FeatureData");
-                       Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
-                       Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
-                       downloadingVideo(info);
+            if (SaveDataClass.getInstance().getSetIndexForDownloading().equals("Feature")) {
+                info = getIntent().getExtras().getParcelable("FeatureData");
+                Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
+                Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
+                downloadingVideo(info);
 
-                   }
-
-                   else if(SaveDataClass.getInstance().getSetIndexForDownloading().equals("Trending")) {
-                       info = getIntent().getExtras().getParcelable("TrendingVideoData");
-                       Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
-                       Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
-                       downloadingVideo(info);
-                   }
-                   else if(SaveDataClass.getInstance().getSetIndexForDownloading().equals("Latest")) {
-                       info = getIntent().getExtras().getParcelable("LatestVideodata");
-                       Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
-                       Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
-                       downloadingVideo(info);
-                   }
-                   else if(SaveDataClass.getInstance().getSetIndexForDownloading().equals("Recent")) {
-                       info = getIntent().getExtras().getParcelable("RecentVideodata");
-                       Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
-                       Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
-                       downloadingVideo(info);
-                   }
+            } else if (SaveDataClass.getInstance().getSetIndexForDownloading().equals("Trending")) {
+                info = getIntent().getExtras().getParcelable("TrendingVideoData");
+                Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
+                Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
+                downloadingVideo(info);
+            } else if (SaveDataClass.getInstance().getSetIndexForDownloading().equals("Latest")) {
+                info = getIntent().getExtras().getParcelable("LatestVideodata");
+                Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
+                Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
+                downloadingVideo(info);
+            } else if (SaveDataClass.getInstance().getSetIndexForDownloading().equals("Recent")) {
+                info = getIntent().getExtras().getParcelable("RecentVideodata");
+                Stringhashmap.put(info.getVideoLink(), info.getSubtitle());
+                Log.d("LoginActivityurl", Stringhashmap.keySet() + "");
+                downloadingVideo(info);
+            }
 
 
-                   //
-            Toast.makeText(LoginActivity.this, purchase.orderId +purchase.data+"", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "onSuccess: "+purchase.data);
+            //
+            Toast.makeText(LoginActivity.this, purchase.orderId + purchase.data + "", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onSuccess: " + purchase.data);
         }
 
         @Override
         public void onError(int response, Exception e) {
             // handle errors here
             Log.d(TAG, "purchase exception:-" + e + "");
-            Toast.makeText(LoginActivity.this, "purchase exception:-" + e+"", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, "purchase exception:-" + e + "", Toast.LENGTH_SHORT).show();
         }
     }
 

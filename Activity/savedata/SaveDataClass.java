@@ -49,6 +49,15 @@ public class SaveDataClass {
         return single_instance;
     }
 
+    public String getIslogout() {
+        return islogout;
+    }
+
+    public void setIslogout(String islogout) {
+        this.islogout = islogout;
+    }
+
+    String islogout;
     public Info getInfo() {
         return info;
     }

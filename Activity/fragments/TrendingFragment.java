@@ -153,9 +153,9 @@ public class TrendingFragment extends Fragment implements CommonInterface {
     @Override
     public void trendingVideoOnclick(Info info) {
 
-        TrendingVideoDetailsFragment trendingVideoDetailsFragment = new TrendingVideoDetailsFragment();
+       /* TrendingVideoDetailsFragment trendingVideoDetailsFragment = new TrendingVideoDetailsFragment();
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.addToBackStack("trending fragment");
+        fragmentTransaction.addToBackStack("trending fragment");*/
 
      /*   args.putParcelable("trendingdata",info);
         trendingVideoDetailsFragment.setArguments(args);
@@ -163,6 +163,8 @@ public class TrendingFragment extends Fragment implements CommonInterface {
         fragmentTransaction.commit();*/
 
         //
+
+        Log.d("Tendingviseo", "trendingVideoOnclick: "+info.getThumbnails());
         Intent intent = new Intent(getContext(), TendingDetailsActivity.class);
         intent.putExtra("trendingdata", info);
         startActivity(intent);

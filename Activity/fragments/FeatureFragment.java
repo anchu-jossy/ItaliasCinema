@@ -17,20 +17,15 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.CenterZoomLayoutManager;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.FeatureAdapterForVideo;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.FeatureAdapterForWatchHistory;
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.interfaces.DotsIndicatorDecoration;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.CenterZoomLayoutManager;
-
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.interfaces.DotsIndicatorDecoration;
-
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
-
 import com.ItaliasCinemas.ajit.Italiascinema.R;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 import com.yarolegovich.discretescrollview.transform.Pivot;
@@ -97,7 +92,7 @@ public class FeatureFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+Log.d("oncreate","jhihh");
     }
 
     @Override
@@ -106,7 +101,7 @@ public class FeatureFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_feature, container, false);
         unbinder = ButterKnife.bind(this, view);
-
+        Log.d("sizeoflist123","userid"+ SaveDataClass.getUserID(getContext()));
         progressLoader.setVisibility(View.GONE);
         getFeatureMovies();
         return view;
@@ -116,7 +111,6 @@ public class FeatureFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
 
 
         try {
@@ -178,7 +172,6 @@ public class FeatureFragment extends Fragment {
     private void getFeatureMovies() {
 
         progressLoader.setVisibility(View.VISIBLE);
-        Log.d("sizeoflist123", SaveDataClass.getUserID(getContext()));
 
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
 
@@ -196,7 +189,7 @@ public class FeatureFragment extends Fragment {
                     infoArrayList.clear();
                     for (int i = 0; i < featureMoviesResponse.getInfo().size(); i++) {
                         infoArrayList.add(featureMoviesResponse.getInfo().get(i));
-
+                        Log.d("sizeoflist123", SaveDataClass.getUserID(getContext()));
                     }
                     getWatchHistoryData();
 
@@ -217,11 +210,11 @@ public class FeatureFragment extends Fragment {
     }
 
     private void getWatchHistoryData() {
-        if(progressLoader!=null)
-        progressLoader.setVisibility(View.VISIBLE);
+        if (progressLoader != null)
+            progressLoader.setVisibility(View.VISIBLE);
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
 
-        Call<FeatureMoviesResponse> call = italiaApi.getWatchHistory(SaveDataClass.getUserID(getContext()));
+        Call<FeatureMoviesResponse> call = italiaApi.getWatchHistory("64");
 
         call.enqueue(new Callback<FeatureMoviesResponse>() {
             @Override
@@ -231,7 +224,7 @@ public class FeatureFragment extends Fragment {
                 FeatureMoviesResponse featureMoviesResponse = response.body();
 
                 if (featureMoviesResponse.getStatus() == 1) {
-                    if(progressLoader!=null)
+                    if (progressLoader != null)
                         progressLoader.setVisibility(View.GONE);
                     infoHistoryArrayList.clear();
                     for (int i = 0; i < featureMoviesResponse.getInfo().size(); i++) {
@@ -252,8 +245,8 @@ public class FeatureFragment extends Fragment {
 
             @Override
             public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
-                if(progressLoader!=null)
-                progressLoader.setVisibility(View.GONE);
+                if (progressLoader != null)
+                    progressLoader.setVisibility(View.GONE);
                 Log.d("Fetaure1", t.getMessage());
             }
         });
@@ -275,7 +268,7 @@ public class FeatureFragment extends Fragment {
                 FeatureMoviesResponse featureMoviesResponse = response.body();
 
                 if (featureMoviesResponse.getStatus() == 1) {
-                    if(progressLoader!=null)
+                    if (progressLoader != null)
                         progressLoader.setVisibility(View.GONE);
                     allInfoArrayList.clear();
                     for (int i = 0; i < featureMoviesResponse.getInfo().size(); i++) {
@@ -291,7 +284,7 @@ public class FeatureFragment extends Fragment {
             @Override
             public void onFailure(Call<FeatureMoviesResponse> call, Throwable t) {
                 Log.d("Fetaure1", t.getMessage());
-                if(progressLoader!=null)
+                if (progressLoader != null)
                     progressLoader.setVisibility(View.GONE);
             }
         });

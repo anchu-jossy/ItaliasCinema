@@ -75,8 +75,15 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         btnDone.setOnClickListener(this);
         //getDeviceImei();
         // getText();
-        checkPermission();
+        if(SaveDataClass.getInstance().getIslogout().equals("HomeActivity")){
+
+        }
+        else{
+            checkPermission();
+        }
+
     }
+    @TargetApi(Build.VERSION_CODES.O)
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void checkPermission() {
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M){
@@ -86,9 +93,9 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
                         PERMISSIONS_REQUEST_READ_PHONE_STATE);
             }
             else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    getDeviceImei();
-                }
+             //  getDeviceImei();
+               /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                }*/
             }
         }
 
@@ -98,14 +105,14 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
         if(grantResults[0]==PackageManager.PERMISSION_GRANTED){
-            getDeviceImei();
+         //   getDeviceImei();
         }
 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("MissingPermission")
-    private String getDeviceImei() {
+    /*private String getDeviceImei() {
         mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (mTelephonyManager.getImei() != null) {
             myAndroidDeviceId = mTelephonyManager.getImei();
@@ -114,7 +121,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             Log.d("msg123", "DeviceImei " + myAndroidDeviceId);
         }
         return myAndroidDeviceId;
-    }
+    }*/
     @Override
     protected void onResume() {
         super.onResume();
@@ -134,7 +141,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         password = edtPassword.getText().toString();
         ItaliaApi italiaApi = RetrofitClientInstance.getRetrofitInstance().create(ItaliaApi.class);
 
-        Call<RegisterResponse> call = italiaApi.registration(phno, email, username, password,getDeviceImei());
+        Call<RegisterResponse> call = italiaApi.registration(phno, email, username, password,"860370036066583");
         call.enqueue(new Callback<RegisterResponse>() {
             @Override
             public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {

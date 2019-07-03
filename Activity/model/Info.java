@@ -58,9 +58,18 @@ public class Info implements Parcelable {
     @SerializedName("date")
     @Expose
     private String date;
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
     @SerializedName("rating")
     @Expose
-    private String rating;
+    private int rating;
     @SerializedName("adds")
     @Expose
     private List<Add> adds = null;
@@ -161,13 +170,7 @@ public class Info implements Parcelable {
         this.date = date;
     }
 
-    public String getRating() {
-        return rating;
-    }
 
-    public void setRating(String rating) {
-        this.rating = rating;
-    }
 
     public List<Add> getAdds() {
         return adds;
@@ -202,7 +205,7 @@ public class Info implements Parcelable {
         dest.writeString(this.subtitle);
         dest.writeString(this.videoLink);
         dest.writeString(this.date);
-        dest.writeString(this.rating);
+        dest.writeInt(this.rating);
         dest.writeTypedList(this.adds);
     }
 
@@ -220,7 +223,7 @@ public class Info implements Parcelable {
         this.subtitle = in.readString();
         this.videoLink = in.readString();
         this.date = in.readString();
-        this.rating = in.readString();
+        this.rating = in.readInt();
         this.adds = in.createTypedArrayList(Add.CREATOR);
     }
 

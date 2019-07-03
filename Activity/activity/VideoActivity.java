@@ -12,15 +12,11 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Add;
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.activity.AdsActivity;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.interfaces.CommonInterface;
-
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Add;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.SetWatchHistoryResponse;
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.ItaliasCinemas.ajit.Italiascinema.R;
 import com.google.android.exoplayer2.C;
@@ -73,8 +69,11 @@ public class VideoActivity extends AppCompatActivity implements Player.EventList
     MediaSource source;
     Timer timer;
     List<Add> addArrayList = new ArrayList<>();
+    ;
     Info info;
     HashMap<Long, String> map = new HashMap<>();
+
+    HashMap<String, ArrayList<Add>> featuremap = new HashMap<>();
     private SimpleExoPlayer Exoplayer;
 
     @Override
@@ -90,58 +89,74 @@ public class VideoActivity extends AppCompatActivity implements Player.EventList
 
         if (SaveDataClass.getInstance().getSetIndexFrom().equals("feature")) {
             if (getIntent().getExtras() != null) {
-                info = getIntent().getExtras().getParcelable("featurevideoarray");
-                if (info.getAdds() != null) {
+                Info info = getIntent().getExtras().getParcelable("featurevideoarray");
+                Log.d("arraylistsize", "onCreate: " + "   " + info.getVideoLink()+ "" + info.getAdds().size());
+                if (info != null) {
 
                     addArrayList.addAll(info.getAdds());
-                    for (int i = 0; i < addArrayList.size(); i++) {
-                        map.put(Long.valueOf(addArrayList.get(i).getStartTime()), addArrayList.get(i).getVideoUrl());
-                    }
-                    Log.d("infodata", map.keySet() + "");
-                }
 
-                initializeVideoPlayer(info);
+                    if (addArrayList.size() > 0) {
+                        for (int i = 0; i < addArrayList.size(); i++) {
+
+                            map.put(Long.valueOf(addArrayList.get(i).getStartTime()), addArrayList.get(i).getVideoUrl());
+                        }
+                        Log.d("infodata", map.keySet() + "");
+                    }
+
+                    initializeVideoPlayer(info);
+                }
             }
-        } else if (SaveDataClass.getInstance().getSetIndexFrom().equals("trending")) {
+        } else if (SaveDataClass.getInstance().getSetIndexFrom().equals("trending"))
+
+        {
             if (getIntent().getExtras() != null) {
                 Info info = getIntent().getExtras().getParcelable("trendingvideodata");
-                if (info.getAdds() != null) {
+                if (info.getVideoLink() != null) {
 
                     addArrayList.addAll(info.getAdds());
-                    for (int i = 0; i < addArrayList.size(); i++) {
-                        map.put(Long.valueOf(addArrayList.get(i).getStartTime()), addArrayList.get(i).getVideoUrl());
+                    if (addArrayList.size() > 0) {
+
+                        for (int i = 0; i < addArrayList.size(); i++) {
+                            map.put(Long.valueOf(addArrayList.get(i).getStartTime()), addArrayList.get(i).getVideoUrl());
+                        }
+                        Log.d("infodata", map.keySet() + "");
                     }
-                    Log.d("infodata", map.keySet() + "");
+                    Log.d("infoArrayList", info.getVideoLink() + "");
+                    initializeVideoPlayer(info);
                 }
-                Log.d("infoArrayList", info.getVideoLink() + "");
-                initializeVideoPlayer(info);
             }
+
         } else if (SaveDataClass.getInstance().getSetIndexFrom().equals("latest")) {
             if (getIntent().getExtras() != null) {
                 Info info = getIntent().getExtras().getParcelable("latestdata");
-                if (info.getAdds() != null) {
+                if (info.getVideoLink() != null) {
 
                     addArrayList.addAll(info.getAdds());
-                    for (int i = 0; i < addArrayList.size(); i++) {
-                        map.put(Long.valueOf(addArrayList.get(i).getStartTime()), addArrayList.get(i).getVideoUrl());
+                    if (addArrayList.size() > 0) {
+
+                        for (int i = 0; i < addArrayList.size(); i++) {
+                            map.put(Long.valueOf(addArrayList.get(i).getStartTime()), addArrayList.get(i).getVideoUrl());
+                        }
+                        Log.d("infodata", map.keySet() + "");
                     }
-                    Log.d("infodata", map.keySet() + "");
+                    initializeVideoPlayer(info);
                 }
-                initializeVideoPlayer(info);
             }
         } else if (SaveDataClass.getInstance().getSetIndexFrom().equals("recent")) {
             if (getIntent().getExtras() != null) {
                 Info info = getIntent().getExtras().getParcelable("recentdata");
-                if (info.getAdds() != null) {
+                if (info.getVideoLink() != null) {
 
                     addArrayList.addAll(info.getAdds());
-                    for (int i = 0; i < addArrayList.size(); i++) {
-                        map.put(Long.valueOf(addArrayList.get(i).getStartTime()), addArrayList.get(i).getVideoUrl());
+                    if (addArrayList.size() > 0) {
+                        for (int i = 0; i < addArrayList.size(); i++) {
+                            map.put(Long.valueOf(addArrayList.get(i).getStartTime()), addArrayList.get(i).getVideoUrl());
+                        }
+                        Log.d("infodata", map.keySet() + "");
                     }
-                    Log.d("infodata", map.keySet() + "");
+                    Log.d("infoArrayList", info.getVideoLink() + "");
+                    initializeVideoPlayer(info);
                 }
-                Log.d("infoArrayList", info.getVideoLink() + "");
-                initializeVideoPlayer(info);
             }
         }
     }
@@ -152,13 +167,13 @@ public class VideoActivity extends AppCompatActivity implements Player.EventList
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                pausePosition = Exoplayer.getCurrentPosition()/1000;
+                pausePosition = Exoplayer.getCurrentPosition() / 1000;
 
                 Log.d("timerTask", "run: pausePosition = " + pausePosition);
                 Log.d("timerTask", "run: map.get(pausePosition) = " + map.get(pausePosition));
 
                 String videoUrl = map.get(pausePosition);
-                if(videoUrl != null) {
+                if (videoUrl != null) {
                     runOnUiThread(new Runnable() {
 
                         @Override
@@ -318,6 +333,11 @@ public class VideoActivity extends AppCompatActivity implements Player.EventList
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
 
 
@@ -332,18 +352,17 @@ public class VideoActivity extends AppCompatActivity implements Player.EventList
                 Log.d("tag123", "inside playerststechanged: " + isAddsPlayed);
 
                 String videoUrl = map.get(pausePosition);
-                if(videoUrl != null) {
+                if (videoUrl != null) {
                     map.remove(pausePosition);
 
                     isAddsPlayed = true;
                     Exoplayer.setPlayWhenReady(false);
 
                     Intent intent = new Intent(VideoActivity.this, AdsActivity.class);
-                    intent.putExtra("ADDURL",videoUrl);
+                    intent.putExtra("ADDURL", videoUrl);
                     startActivity(intent);
 
                 }
-
 
 
             } else {

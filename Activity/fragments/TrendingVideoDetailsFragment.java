@@ -131,7 +131,7 @@ public class TrendingVideoDetailsFragment extends Fragment {
         rightTvReleasedDate.setText(info.getDate());
         tvDetailsData.setText(info.getDetails());
         tvTimeDuration.setText("TimeDuration is   " + info.getDurationTime());
-        ratingBar.setNumStars(Integer.parseInt(info.getRating()));
+        ratingBar.setNumStars((info.getRating()));
         Glide.with(getContext()).load(info.getThumbnails()).into(imageViewThumpnail);
     }
 
@@ -147,7 +147,7 @@ public class TrendingVideoDetailsFragment extends Fragment {
 
         if (args != null) {
             info = args.getParcelable("trendingdata");
-            Log.w("infodata", info.getDirector());
+            Log.w("infodata", info.getThumbnails());
             setData(info);
 
         } else {

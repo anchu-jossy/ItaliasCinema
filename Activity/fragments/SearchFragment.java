@@ -8,16 +8,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.ItaliaApi;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
-import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
-
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.Api.RetrofitClientInstance;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.adapter.SearchAdapter;
-
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.FeatureMoviesResponse;
 import com.ItaliasCinemas.ajit.Italiascinema.Activity.model.Info;
-
+import com.ItaliasCinemas.ajit.Italiascinema.Activity.savedata.SaveDataClass;
 import com.ItaliasCinemas.ajit.Italiascinema.R;
 
 import java.util.ArrayList;
@@ -36,10 +36,18 @@ public class SearchFragment extends Fragment {
     @BindView(R.id.search_recyclerview)
     RecyclerView searchRecyclerview;
     Unbinder unbinder;
-ArrayList<Info>infoArrayList=new ArrayList<>();
+    ArrayList<Info> infoArrayList = new ArrayList<>();
+    @BindView(R.id.tv_recent)
+    TextView tvRecent;
+    @BindView(R.id.progress_loader)
+    ProgressBar progressLoader;
+    @BindView(R.id.search_container)
+    RelativeLayout searchContainer;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         getSearchData();
     }
 
@@ -63,20 +71,19 @@ ArrayList<Info>infoArrayList=new ArrayList<>();
         call.enqueue(new Callback<FeatureMoviesResponse>() {
             @Override
             public void onResponse(Call<FeatureMoviesResponse> call, Response<FeatureMoviesResponse> response) {
-
+                progressLoader.setVisibility(View.VISIBLE);
 
                 FeatureMoviesResponse featureMoviesResponse = response.body();
 
                 if (featureMoviesResponse.getStatus() == 1) {
-
+                    progressLoader.setVisibility(View.GONE);
                     infoArrayList.clear();
-                    for (int i = 0; i < featureMoviesResponse.getInfo().size(); i++)
-                    {
+                    for (int i = 0; i < featureMoviesResponse.getInfo().size(); i++) {
                         infoArrayList.add(featureMoviesResponse.getInfo().get(i));
                     }
 
                     searchRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-                    SearchAdapter searchAdapter = new SearchAdapter(getContext(),infoArrayList);
+                    SearchAdapter searchAdapter = new SearchAdapter(getContext(), infoArrayList);
                     searchRecyclerview.setAdapter(searchAdapter);
                 }
 
@@ -89,6 +96,7 @@ ArrayList<Info>infoArrayList=new ArrayList<>();
         });
 
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
